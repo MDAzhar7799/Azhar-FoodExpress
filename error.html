@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anomaly Detected - FoodExpress</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --m-white: #ffffff;
+            --m-bg: #f8fafc;
+            --m-green-dark: #0f1c17;
+            --m-green-mid: #1a3a2a;
+            --m-green-light: #2d6a4f;
+            --m-neon: #22c55e;
+            --m-text: #1e293b;
+            --m-muted: #64748b;
+            --m-border: #f1f5f9;
+            --m-error: #ef4444;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--m-bg);
+            color: var(--m-text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+        
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: linear-gradient(135deg, var(--m-green-dark) 0%, var(--m-green-mid) 100%);
+            position: sticky; top: 0; z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+        }
+        .nav-container {
+            max-width: 1300px; margin: auto;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 13px 24px;
+        }
+        .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-icon {
+            width: 44px; height: 44px;
+            background: linear-gradient(135deg, var(--m-neon), #16a34a);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; color: white;
+            box-shadow: 0 4px 15px rgba(34,197,94,0.4);
+        }
+        .brand h1 { font-size: 1.4rem; font-weight: 800; color: white; letter-spacing: -0.3px; }
+
+        /* ===== ERROR CONTENT ===== */
+        .error-hero {
+            flex: 1; display: flex; align-items: center; justify-content: center;
+            padding: 80px 24px; position: relative;
+        }
+        .error-hero::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at 10% 20%, rgba(239,68,68,0.05), transparent 40%),
+                        radial-gradient(circle at 90% 80%, rgba(34,197,94,0.05), transparent 40%);
+            pointer-events: none;
+        }
+
+        .error-card {
+            width: 100%; max-width: 550px;
+            background: white; border-radius: 40px; padding: 60px 40px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.06);
+            border: 1px solid rgba(0,0,0,0.03);
+            text-align: center; position: relative; z-index: 5;
+            animation: cardEntrance 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+        }
+        @keyframes cardEntrance { from{opacity:0;transform:translateY(40px);} to{opacity:1;transform:translateY(0);} }
+
+        .glitch-box { position: relative; margin-bottom: 20px; }
+        .error-code {
+            font-size: 8rem; font-weight: 900; line-height: 1;
+            background: linear-gradient(135deg, var(--m-green-dark), var(--m-green-mid));
+            -webkit-background-clip: text; 
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -5px; position: relative;
+        }
+        .error-code::before {
+            content: attr(data-text);
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            -webkit-background-clip: text; 
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(135deg, transparent, rgba(34,197,94,0.3));
+            animation: glitch 3s infinite; opacity: 0.5;
+        }
+        @keyframes glitch { 0% { transform: translate(0); } 20% { transform: translate(-2px, 2px); } 40% { transform: translate(-2px, -2px); } 60% { transform: translate(2px, 2px); } 80% { transform: translate(2px, -2px); } 100% { transform: translate(0); } }
+
+        .error-icon {
+            width: 90px; height: 90px; background: #fff1f2; color: var(--m-error);
+            border-radius: 30px; margin: 0 auto 30px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; box-shadow: 0 15px 30px rgba(239,68,68,0.15);
+            animation: rotateShake 4s infinite;
+        }
+        @keyframes rotateShake { 0%, 100% { transform: rotate(0); } 10%, 30% { transform: rotate(-10deg); } 20%, 40% { transform: rotate(10deg); } }
+
+        .error-card h2 { font-size: 2rem; font-weight: 900; color: var(--m-green-dark); letter-spacing: -1px; margin-bottom: 15px; }
+        .error-card p { color: var(--m-muted); font-size: 1.1rem; font-weight: 600; line-height: 1.6; margin-bottom: 40px; }
+
+        .btn-safety {
+            background: linear-gradient(135deg, var(--m-neon), #16a34a);
+            color: white; padding: 22px 40px; border-radius: 22px;
+            font-weight: 900; font-size: 1.1rem; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 12px;
+            box-shadow: 0 15px 35px rgba(34,197,94,0.3);
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .btn-safety:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 20px 45px rgba(34,197,94,0.45); }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: linear-gradient(135deg, #020617, #0f172a);
+            padding: 80px 30px 0;
+            color: rgba(255,255,255,0.4); font-family: 'Outfit', sans-serif;
+        }
+        .footer-grid {
+            max-width: 1300px; margin: auto;
+            display: grid; grid-template-columns: 2fr 1fr 1fr;
+            gap: 60px; padding-bottom: 60px;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+        .footer-brand-col .flabel {
+            display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+        }
+        .footer-brand-col .flogo {
+            width: 42px; height: 42px; border-radius: 12px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; color: white;
+        }
+        .footer-brand-col h2 { font-size: 1.4rem; font-weight: 900; color: white; }
+        .footer-brand-col p { color: rgba(255,255,255,0.4); font-size: 0.95rem; line-height: 1.75; max-width: 380px; }
+        .footer-col h4 { font-size: 1rem; font-weight: 800; color: white; margin-bottom: 22px; }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a {
+            color: rgba(255,255,255,0.4); text-decoration: none;
+            font-size: 0.9rem; font-weight: 500; transition: 0.3s;
+            display: flex; align-items: center; gap: 7px;
+        }
+        .footer-links a:hover { color: #4ade80; padding-left: 4px; }
+        .footer-links a i { font-size: 0.75rem; color: #22c55e; }
+        .footer-bottom {
+            max-width: 1300px; margin: auto; padding: 30px 0;
+            text-align: center; color: #ffffff;
+            font-size: 0.9rem; font-weight: 700;
+        }
+        /* ===== MOBILE HEADER ===== */
+        .mobile-search-header { display: none; background: #0f1c17; padding: 10px 15px; position: sticky; top: 0; z-index: 1500; }
+
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: white; height: 65px;
+            display: none; align-items: center; justify-content: space-around;
+            z-index: 2000; box-shadow: 0 -2px 15px rgba(0,0,0,0.08);
+            border-top: 1px solid #f1f5f9;
+        }
+        .bottom-nav-inner {
+            display: flex; width: 100%; justify-content: space-around; align-items: center;
+        }
+        .bottom-nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #64748b; font-size: 0.7rem; font-weight: 700; gap: 1px; transition: 0.3s; flex: 1; }
+        .bottom-nav-item i { font-size: 1.2rem; transition: 0.3s; }
+        .bottom-nav-item.active { color: #22c55e; }
+        .bottom-nav-item.active i { transform: translateY(-2px); }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .navbar { display: none; }
+            .mobile-search-header { display: block !important; background: #0f1c17 !important; }
+            .bottom-nav { display: flex !important; }
+            body { padding-bottom: 80px !important; }
+
+            .error-hero { padding: 40px 15px; }
+            .error-card { padding: 40px 20px; border-radius: 30px; }
+            .error-code { font-size: 5rem; }
+            .error-icon { width: 70px; height: 70px; font-size: 2rem; margin-bottom: 20px; }
+            .error-card h2 { font-size: 1.6rem; }
+            .error-card p { font-size: 0.95rem; }
+            
+            .btn-safety { padding: 18px 30px; font-size: 1rem; border-radius: 18px; width: 100%; justify-content: center; }
+
+            /* Footer Mobile Styles */
+            footer { padding: 35px 12px 0 !important; width: 100% !important; overflow: hidden !important; }
+            .footer-grid { 
+                display: grid !important; 
+                grid-template-columns: 1.1fr 0.8fr 1.1fr !important;
+                gap: 10px !important;
+                text-align: left !important; 
+                padding: 0 8px 30px !important; 
+                margin: 0 !important;
+                width: 100% !important;
+                align-items: start !important;
+            }
+            .footer-brand-col { text-align: left !important; padding: 0 !important; margin: 0 !important; }
+            .footer-brand-col .flabel { justify-content: flex-start !important; gap: 8px !important; margin-bottom: 10px !important; } 
+            .footer-brand-col .flogo { width: 30px !important; height: 30px !important; font-size: 0.8rem !important; border-radius: 8px !important; }
+            .footer-brand-col h2 { font-size: 1rem !important; margin: 0 !important; line-height: 30px !important; color: white !important; font-weight: 900 !important; }
+            .footer-brand-col p { font-size: 0.68rem !important; line-height: 1.4 !important; margin-top: 8px !important; color: rgba(255,255,255,0.5) !important; }
+            .footer-col { padding-top: 0 !important; margin-top: 0 !important; }
+            .footer-col h4 { font-size: 0.75rem !important; margin-bottom: 10px !important; margin-top: 0 !important; padding-top: 0 !important; white-space: nowrap !important; color: white !important; font-weight: 900 !important; line-height: 30px !important; }
+            .footer-links a { font-size: 0.65rem !important; gap: 4px !important; padding: 3px 0 !important; color: rgba(255,255,255,0.5) !important; white-space: nowrap !important; }
+            .footer-links li { margin-bottom: 5px !important; }
+
+            .footer-bottom { padding: 18px 0 !important; border-top: 1px solid rgba(255,255,255,0.05) !important; }
+            .footer-bottom p { font-size: 0.7rem !important; color: white !important; font-weight: 700 !important; text-align: center !important; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('home') }}" class="brand">
+                <div class="logo-icon"><i class="fas fa-utensils"></i></div>
+                <h1>FoodExpress</h1>
+            </a>
+        </div>
+    </nav>
+    
+    <!-- Mobile Header -->
+    <div class="mobile-search-header">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <a href="{{ url_for('home') }}" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+                <div style="width: 30px; height: 30px; background: #22c55e; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem;">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <span style="font-size: 1.1rem; font-weight: 800; letter-spacing: -0.5px; color: white;">FoodExpress</span>
+            </a>
+            <div style="display: flex; align-items: center; gap: 15px; color: white;">
+                {% if session.user_id %}
+                    <a href="{{ url_for('profile') }}" style="color:white; text-decoration:none;"><i class="fas fa-user-circle" style="font-size: 1.3rem;"></i></a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="bottom-nav-inner">
+            <a href="{{ url_for('home') }}" class="bottom-nav-item">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="{{ url_for('shops_list') }}" class="bottom-nav-item">
+                <i class="fas fa-search"></i>
+                <span>Explore</span>
+            </a>
+            <a href="{{ url_for('cart') }}" class="bottom-nav-item">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Cart</span>
+            </a>
+            <a href="{{ url_for('my_orders') }}" class="bottom-nav-item">
+                <i class="fas fa-receipt"></i>
+                <span>My Order</span>
+            </a>
+            <a href="{{ url_for('profile') if session.user_id else url_for('login') }}" class="bottom-nav-item">
+                <i class="fas fa-user"></i>
+                <span>Account</span>
+            </a>
+        </div>
+    </div>
+
+    <main class="error-hero">
+        <div class="error-card">
+            <div class="error-icon"><i class="fas fa-satellite" aria-hidden="true"></i></div>
+            <div class="glitch-box">
+                <div class="error-code" data-text="{{ error_code if error_code else '404' }}">{{ error_code if error_code else '404' }}</div>
+            </div>
+            <h2>Quantum Disruption</h2>
+            <p>{{ error_message if error_message else 'The logic path you requested has been truncated or does not exist in this sector.' }}</p>
+            <a href="{{ url_for('home') }}" class="btn-safety">
+                <i class="fas fa-shield-alt" aria-hidden="true"></i> Return to Control Center
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-grid">
+            <!-- Brand -->
+            <div class="footer-brand-col">
+                <div class="flabel">
+                    <div class="flogo"><i class="fas fa-utensils"></i></div>
+                <h2>FoodExpress</h2>
+                </div>
+                <p>A premium food ordering experience for students and faculty across LPU & LawGate. Fresh food, fast delivery, every time.</p>
+            </div>
+            <!-- Quick Links -->
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('home') }}"><i class="fas fa-chevron-right" aria-hidden="true"></i> Home</a></li>
+                    <li><a href="{{ url_for('shops_list') }}"><i class="fas fa-chevron-right" aria-hidden="true"></i> All Shops</a></li>
+                    <li><a href="{{ url_for('home') }}#founder"><i class="fas fa-chevron-right" aria-hidden="true"></i> Founder</a></li>
+                </ul>
+            </div>
+            <!-- Support -->
+            <div class="footer-col">
+                <h4>Support</h4>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('my_orders') }}"><i class="fas fa-chevron-right" aria-hidden="true"></i> Track Order</a></li>
+                    <li><a href="{{ url_for('login') }}"><i class="fas fa-chevron-right" aria-hidden="true"></i> Login</a></li>
+                    <li><a href="{{ url_for('register') }}"><i class="fas fa-chevron-right" aria-hidden="true"></i> Register</a></li>
+                    <li><a href="mailto:mdazhark735@gmail.com"><i class="fas fa-envelope" aria-hidden="true"></i> mdazhark735@gmail.com</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 FoodExpress — Made by MD Azhar | Built for everyone, loved by students</p>
+        </div>
+    </footer>
+</body>
+</html>

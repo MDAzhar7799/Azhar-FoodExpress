@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Node Intel - FoodExpress Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-light: #f3f4f6;
+            --white: #ffffff;
+            --header-gradient: linear-gradient(to right, #1a3a32, #2d6a4f);
+            --text-dark: #111827;
+            --text-muted: #6b7280;
+            --blue: #3b82f6;
+            --green: #10b981;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+ 
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: var(--header-gradient);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; }
+        .brand i { font-size: 1.4rem; background: rgba(255,255,255,0.2); padding: 8px; border-radius: 50%; }
+        .brand h1 { font-size: 1.25rem; font-weight: 700; }
+ 
+        .nav-links { display: flex; gap: 25px; align-items: center; }
+        .nav-item { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 500; display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+        .logout-btn { background: rgba(239, 68, 68, 0.4); color: white; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.9rem; border: 1px solid rgba(255,255,255,0.2); }
+ 
+        /* ===== CONTAINER ===== */
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+ 
+        .profile-card {
+            background: white;
+            padding: 40px;
+            border-radius: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 30px;
+            background: #ecfdf5;
+            color: #059669;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            font-weight: 900;
+        }
+        .info h1 { font-size: 2.2rem; font-weight: 900; letter-spacing: -1px; }
+        .info p { color: var(--text-muted); font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; }
+ 
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .sub-card { background: white; padding: 30px; border-radius: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .sub-card h3 { font-size: 1rem; font-weight: 850; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .sub-card h3 i { color: var(--green); }
+ 
+        .data-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
+        .data-lab { color: var(--text-muted); font-weight: 700; font-size: 0.85rem; }
+        .data-val { font-weight: 800; font-size: 0.9rem; }
+ 
+        footer { background: #020617; padding: 60px 20px; color: #94a3b8; text-align: center; margin-top: 100px; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{{ url_for('admin_dashboard') }}" class="brand">
+            <i class="fas fa-user-shield"></i>
+            <h1>FoodExpress - Admin</h1>
+        </a>
+        <div class="nav-links">
+            <a href="{{ url_for('admin_dashboard') }}" class="nav-item"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a href="{{ url_for('admin_shopkeepers') }}" class="nav-item"><i class="fas fa-users"></i> Shopkeeper</a>
+            <a href="{{ url_for('admin_shops') }}" class="nav-item"><i class="fas fa-gear"></i> Shops</a>
+            <a href="{{ url_for('admin_logout') }}" class="logout-btn">LOG OUT</a>
+        </div>
+    </nav>
+ 
+    <div class="container">
+        <div class="profile-card">
+            <div class="avatar">{{ shopkeeper.username[0]|upper }}</div>
+            <div class="info">
+                <p>Merchant Node: #SK-{{ shopkeeper.id }}</p>
+                <h1>{{ shopkeeper.username }}</h1>
+            </div>
+        </div>
+ 
+        <div class="grid-2">
+            <div class="sub-card">
+                <h3><i class="fas fa-id-card"></i> Personnel Meta</h3>
+                <div class="data-row"><span class="data-lab">Identifier</span><span class="data-val">{{ shopkeeper.username }}</span></div>
+                <div class="data-row"><span class="data-lab">Secure Email</span><span class="data-val">{{ shopkeeper.email }}</span></div>
+                <div class="data-row"><span class="data-lab">Protocol Phone</span><span class="data-val">{{ shopkeeper.phone }}</span></div>
+                <div class="data-row"><span class="data-lab">Creation Hash</span><span class="data-val">{{ shopkeeper.created_at | dateformat('%Y-%m-%d %H:%M') }}</span></div>
+            </div>
+ 
+            <div class="sub-card">
+                <h3><i class="fas fa-store"></i> Assigned culinary Entity</h3>
+                {% if shop %}
+                    <div class="data-row"><span class="data-lab">Entity Name</span><span class="data-val">{{ shop.name }}</span></div>
+                    <div class="data-row"><span class="data-lab">Grid Location</span><span class="data-val">{{ shop.location }}</span></div>
+                    <div class="data-row"><span class="data-lab">Entity Status</span><span class="data-val" style="color: var(--green);">Operational</span></div>
+                {% else %}
+                    <p style="text-align: center; color: var(--text-muted); padding: 20px;">No shop assigned to this controller.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+ 
+            <footer>
+        <p>© 2026 FoodExpress. System Administration. Power by AZHAR™</p>
+    </footer>
+</body>
+</html>

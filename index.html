@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodExpress – Order Smart, Eat Better</title>
+    <meta name="description" content="Order food online from LPU & LawGate shops. Skip queues, get food delivered fast. Built for students and everyone!">
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#22c55e">
+    <link rel="apple-touch-icon" href="/static/brand.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html, body { width: 100%; overflow-x: hidden; position: relative; margin: 0; padding: 0; }
+
+        :root {
+            --m-white: #ffffff;
+            --m-bg: #f8fafc;
+            --m-green-dark: #1c3d38;
+            --m-green-mid: #2a5e56;
+            --m-green-light: #3a8878;
+            --m-neon: #22c55e;
+            --m-text: #1e293b;
+            --m-muted: #64748b;
+            --m-border: #f1f5f9;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: #0b1614;
+            position: sticky; top: 0; z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+        }
+        .nav-container {
+            max-width: 1300px; margin: auto;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 13px 24px;
+        }
+        .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-icon {
+            width: 44px; height: 44px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; color: white;
+            box-shadow: 0 4px 15px rgba(34,197,94,0.4);
+        }
+        .brand h1 { font-size: 1.5rem; font-weight: 900; color: white; letter-spacing: -0.5px; margin: 0; }
+
+        .nav-menu { display: flex; align-items: center; gap: 8px; }
+        .nav-menu a {
+            color: rgba(255,255,255,0.85); text-decoration: none;
+            font-weight: 700; font-size: 0.95rem;
+            padding: 10px 18px; border-radius: 12px;
+            display: flex; align-items: center; gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .nav-menu a:hover, .nav-menu a.active { 
+            background: rgba(255,255,255,0.1); color: white;
+        }
+        .btn-register-menu {
+            background: #22c55e !important;
+            color: white !important;
+            padding: 10px 22px !important;
+            border-radius: 12px !important;
+            font-weight: 800 !important;
+            box-shadow: 0 4px 15px rgba(34,197,94,0.3);
+            margin-left: 10px;
+            text-decoration: none;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .btn-register-menu:hover {
+            background: #16a34a !important;
+            transform: translateY(-1px);
+        }
+        .user-name-nav { color: white; font-weight: 700; margin-right: 5px; }
+        .cart-nav { color: white !important; cursor: pointer; }
+        .cart-badge {
+            width: 18px; height: 18px; background: #ef4444;
+            border-radius: 50%; color: white;
+            font-size: 10px; font-weight: 800;
+            display: flex; align-items: center; justify-content: center;
+            margin-left: 5px;
+        }
+
+        .mobile-toggle { display: none; background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+
+        /* ===== HERO ===== */
+        .hero {
+            background: linear-gradient(160deg, #1c3d38 0%, #2a5e56 40%, #3a8878 70%, #1c3d38 100%);
+            padding: 110px 30px 120px;
+            position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse 60% 50% at 70% 50%, rgba(34,197,94,0.08), transparent);
+        }
+        /* Decorative blobs */
+        .hero-blob1 {
+            position: absolute; top: -100px; right: -100px;
+            width: 500px; height: 500px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(34,197,94,0.07), transparent 70%);
+        }
+        .hero-blob2 {
+            position: absolute; bottom: -80px; left: -80px;
+            width: 400px; height: 400px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(58,136,120,0.08), transparent 70%);
+        }
+        .hero-inner {
+            max-width: 1400px; margin: auto; width: 100%;
+            display: grid; grid-template-columns: 1.1fr 1fr;
+            gap: 80px; align-items: center; position: relative; z-index: 1;
+        }
+        .hero-tag {
+            background: rgba(34,197,94,0.12); color: var(--m-neon);
+            padding: 8px 18px; border-radius: 100px; font-weight: 700;
+            font-size: 0.85rem; display: inline-flex; align-items: center; gap: 8px;
+            margin-bottom: 28px; border: 1px solid rgba(34,197,94,0.2);
+        }
+        .hero h2 {
+            font-size: clamp(2.8rem, 5vw, 4.2rem); font-weight: 900; color: white;
+            line-height: 1.1; margin-bottom: 24px; letter-spacing: -2px;
+        }
+        .hero h2 .highlight {
+            background: linear-gradient(135deg, var(--m-neon), #16a34a);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            font-size: 1.15rem; color: rgba(255,255,255,0.65); line-height: 1.75;
+            margin-bottom: 42px; max-width: 520px; font-weight: 400;
+        }
+        .cta-group { display: flex; gap: 15px; flex-wrap: wrap; }
+        .btn-main {
+            background: linear-gradient(135deg, #0f0f1a 0%, #3b1d6e 50%, #c084fc 100%);
+            color: white; padding: 18px 38px;
+            border-radius: 16px; font-weight: 800; font-size: 1.05rem;
+            text-decoration: none; transition: 0.35s;
+            border: 1px solid rgba(192,132,252,0.3);
+            box-shadow: 0 12px 30px rgba(59,29,110,0.5);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .btn-main:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(192,132,252,0.5); }
+        .btn-outline {
+            background: linear-gradient(135deg, #0f0f1a 0%, #3b1d6e 50%, #c084fc 100%);
+            color: white;
+            padding: 18px 34px; border-radius: 16px;
+            font-weight: 700; font-size: 1.05rem;
+            text-decoration: none;
+            border: 1px solid rgba(192,132,252,0.3);
+            transition: 0.35s; display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 12px 30px rgba(59,29,110,0.5);
+        }
+        .btn-outline:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(192,132,252,0.5); }
+
+        .hero-img-wrap { position: relative; }
+        .hero-dual-imgs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            align-items: center;
+        }
+        .hero-dual-imgs .img-primary {
+            width: 100%; border-radius: 28px;
+            box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+            transform: rotate(2deg); transition: 0.5s;
+            object-fit: cover; height: 320px;
+        }
+        .hero-dual-imgs .img-secondary {
+            width: 100%; border-radius: 28px;
+            box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+            transform: rotate(-2deg); transition: 0.5s;
+            object-fit: cover; height: 280px;
+            margin-top: 30px;
+        }
+        .hero-img-wrap:hover .img-primary { transform: rotate(0deg) scale(1.02); }
+        .hero-img-wrap:hover .img-secondary { transform: rotate(0deg) scale(1.02); }
+        .hero-badge {
+            position: absolute; bottom: -20px; left: -20px;
+            background: white; border-radius: 18px; padding: 16px 22px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+            display: flex; align-items: center; gap: 12px;
+        }
+        .hero-badge-icon { font-size: 1.8rem; }
+        .hero-badge h4 { font-size: 1rem; font-weight: 800; color: #1e293b; }
+        .hero-badge span { font-size: 0.8rem; color: #64748b; }
+
+        /* ===== MARQUEE ===== */
+        .marquee-strip {
+            background: #000000;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 18px 0; overflow: hidden;
+        }
+        .marquee-inner {
+            display: flex; gap: 60px;
+            animation: scrollMarquee 28s linear infinite;
+            white-space: nowrap;
+        }
+        @keyframes scrollMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .marquee-item {
+            font-weight: 800; font-size: 0.95rem; color: rgba(255,255,255,0.9);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .marquee-item i { color: #f97316; }
+
+        /* ===== HOW IT WORKS ===== */
+        .section-how { padding: 80px 30px 60px; background: #ffffff; }
+        .section-header { text-align: center; margin-bottom: 60px; }
+        .section-tag {
+            display: inline-block; background: #0f172a; color: #f97316;
+            padding: 8px 22px; border-radius: 100px; font-size: 0.85rem;
+            font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
+            margin-bottom: 22px; border: 1px solid rgba(249, 115, 22, 0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .section-header h2 { 
+            font-size: 3.2rem; font-weight: 900; color: #0f172a; 
+            margin-bottom: 20px; letter-spacing: -1px;
+            line-height: 1.1;
+        }
+        .section-header p { 
+            color: #f97316; max-width: 600px; margin: auto; 
+            font-size: 1.15rem; line-height: 1.7; font-weight: 600;
+        }
+
+        .steps-grid {
+            max-width: 1200px; margin: auto;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 28px;
+        }
+        .step-card {
+            background: linear-gradient(145deg, #020617 0%, #4c1d95 100%); 
+            padding: 55px 35px; border-radius: 35px;
+            text-align: center; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            position: relative; overflow: hidden;
+        }
+        .step-card:hover { 
+            transform: translateY(-15px) scale(1.02); 
+            border-color: #a855f7;
+            box-shadow: 0 40px 80px rgba(76, 29, 149, 0.4);
+            background: linear-gradient(145deg, #0f172a 0%, #7c3aed 100%);
+        }
+        
+        .step-num {
+            width: 85px; height: 85px; border-radius: 24px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; margin: 0 auto 28px;
+            background: white;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            transition: 0.5s;
+            animation: float3D 4s ease-in-out infinite;
+            transform-style: preserve-3d;
+        }
+        @keyframes float3D {
+            0%, 100% { transform: translateY(0) rotateY(0deg) rotateX(0deg); }
+            33% { transform: translateY(-10px) rotateY(10deg) rotateX(5deg); }
+            66% { transform: translateY(-5px) rotateY(-10deg) rotateX(-5deg); }
+        }
+        .step-card h3 { color: white; margin-bottom: 12px; font-weight: 800; font-size: 1.45rem; }
+        .step-card p { color: rgba(255,255,255,0.7); font-size: 0.95rem; line-height: 1.6; font-weight: 500; }
+
+        /* ===== SHOPS SECTION ===== */
+        .shops-section {
+            padding: 90px 30px;
+            background: linear-gradient(180deg, #f5f3ff 0%, #ffffff 100%);
+            position: relative; overflow: hidden;
+        }
+        .shops-section .section-header h2 { color: #0f172a; font-size: 3rem; }
+        .shops-section .section-header p { color: #64748b; font-weight: 500; font-size: 1.1rem; }
+        .shops-section::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.05), transparent 70%);
+        }
+        .section-tag.tag-vibrant {
+            background: #0f172a;
+            color: #f97316; border: 1px solid rgba(249, 115, 22, 0.3); 
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            font-weight: 900; text-transform: uppercase; letter-spacing: 2px;
+        }
+
+        .shops-grid {
+            max-width: 1300px; margin: auto;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px; position: relative; z-index: 2;
+        }
+        .shop-card {
+            background: white; border-radius: 28px; overflow: hidden;
+            border: 1px solid #f1f5f9; transition: 0.4s;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+        .shop-card:hover { transform: translateY(-12px); box-shadow: 0 30px 60px rgba(0,0,0,0.1); border-color: #7c3aed; }
+        .shop-img { height: 210px; overflow: hidden; }
+        .shop-img img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .shop-card:hover .shop-img img { transform: scale(1.08); }
+        .shop-info { padding: 26px; }
+        .shop-info h3 { font-size: 1.45rem; font-weight: 900; margin-bottom: 8px; color: #0f172a; letter-spacing: -0.5px; }
+        .shop-loc { color: #475569; font-size: 1rem; margin-bottom: 22px; display: flex; align-items: center; gap: 8px; font-weight: 700; }
+        .shop-loc i { color: #22c55e; font-size: 1.1rem; }
+        .btn-shop {
+            background: linear-gradient(135deg, #1e1b4b, #6d28d9);
+            color: white; text-decoration: none;
+            padding: 15px 0; border-radius: 16px; display: block;
+            text-align: center; font-weight: 800; font-size: 1.05rem; transition: 0.3s;
+            box-shadow: 0 10px 25px rgba(109, 40, 217, 0.25);
+        }
+        .btn-shop:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(109, 40, 217, 0.4); filter: brightness(1.1); }
+
+        /* ===== FOUNDER DARK SECTION ===== */
+        .founder-dark {
+            background: #0a0a0a;
+            padding: 90px 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        .founder-dark-blob1 {
+            position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(139,92,246,0.12), transparent 70%);
+            border-radius: 50%;
+        }
+        .founder-dark-blob2 {
+            position: absolute; bottom: -60px; right: 10%;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(244,114,182,0.08), transparent 70%);
+            border-radius: 50%;
+        }
+        .founder-dark-inner {
+            max-width: 700px; margin: auto; text-align: center; position: relative; z-index: 1;
+        }
+        .founder-ornament {
+            display: flex; align-items: center; justify-content: center; gap: 14px;
+        }
+        .founder-ornament .line-r { height: 1px; flex: 1; background: linear-gradient(to right, transparent, rgba(167,139,250,0.5)); }
+        .founder-ornament .line-l { height: 1px; flex: 1; background: linear-gradient(to left, transparent, rgba(167,139,250,0.5)); }
+        .founder-ornament span { color: #a78bfa; font-size: 1rem; letter-spacing: 2px; }
+        .founder-photo-ring {
+            width: 280px; height: 280px; border-radius: 50%; margin: 28px auto;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa, #f472b6, #fb923c);
+            padding: 5px;
+            box-shadow: 0 0 0 10px rgba(167,139,250,0.1), 0 0 50px rgba(124,58,237,0.45);
+            position: relative; display: inline-block;
+        }
+        .founder-photo-ring img {
+            width: 100%; height: 100%; border-radius: 50%;
+            object-fit: cover; object-position: center;
+            border: 5px solid #0a0a0a;
+        }
+        .founder-online-dot {
+            position: absolute; bottom: 14px; right: 14px;
+            width: 22px; height: 22px; border-radius: 50%;
+            background: #10b981; border: 4px solid #0a0a0a;
+            box-shadow: 0 0 12px rgba(16,185,129,0.8);
+        }
+        .founder-name {
+            font-size: 2.8rem; font-weight: 900; letter-spacing: 4px; text-transform: uppercase;
+            background: linear-gradient(135deg, #c4b5fd, #ffffff, #f9a8d4);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; margin-bottom: 6px;
+        }
+        .founder-role-line {
+            display: flex; align-items: center; justify-content: center; gap: 12px; margin: 14px 0;
+        }
+        .founder-role-line .rl { height: 1px; width: 70px; background: linear-gradient(to right, transparent, #7c3aed); }
+        .founder-role-line .ll { height: 1px; width: 70px; background: linear-gradient(to left, transparent, #7c3aed); }
+        .founder-role-line span { color: #a78bfa; font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase; }
+        .founder-tagline {
+            color: rgba(255,255,255,0.5); font-size: 0.95rem; line-height: 1.8;
+            max-width: 360px; margin: 0 auto 24px;
+        }
+        .founder-bottom-ornament {
+            display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 8px;
+        }
+        .founder-bottom-ornament .bl { height: 1px; flex: 1; background: linear-gradient(to right, transparent, rgba(167,139,250,0.3)); }
+        .founder-bottom-ornament .br { height: 1px; flex: 1; background: linear-gradient(to left, transparent, rgba(167,139,250,0.3)); }
+        .founder-bottom-ornament span { color: rgba(167,139,250,0.4); font-size: 0.9rem; }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: linear-gradient(135deg, #020617, #0f172a);
+            padding: 80px 30px 0;
+            font-family: 'Outfit', sans-serif;
+        }
+        .footer-grid {
+            max-width: 1300px; margin: auto;
+            display: grid; grid-template-columns: 2fr 1fr 1fr;
+            gap: 60px; padding-bottom: 60px;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+        .footer-brand-col .flabel {
+            display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+        }
+        .footer-brand-col .flogo {
+            width: 42px; height: 42px; border-radius: 12px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; color: white;
+        }
+        .footer-brand-col h2 { font-size: 1.4rem; font-weight: 900; color: white; }
+        .footer-brand-col p { color: rgba(255,255,255,0.4); font-size: 0.95rem; line-height: 1.75; max-width: 380px; }
+        .footer-col h4 { font-size: 1rem; font-weight: 800; color: white; margin-bottom: 22px; }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a {
+            color: rgba(255,255,255,0.4); text-decoration: none;
+            font-size: 0.9rem; font-weight: 500; transition: 0.3s;
+            display: flex; align-items: center; gap: 7px;
+        }
+        .footer-links a:hover { color: #4ade80; padding-left: 4px; }
+        .footer-links a i { font-size: 0.75rem; color: #22c55e; }
+        .footer-bottom {
+            max-width: 1300px; margin: auto; padding: 30px 0;
+            text-align: center; color: #ffffff;
+            font-size: 0.9rem; font-weight: 700;
+        }
+
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: white; height: 65px;
+            display: none; align-items: center; justify-content: space-around;
+            z-index: 2000; box-shadow: 0 -2px 15px rgba(0,0,0,0.08);
+            border-top: 1px solid #f1f5f9;
+        }
+        .bottom-nav-inner {
+            display: flex; width: 100%; justify-content: space-around; align-items: center;
+        }
+        .bottom-nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #64748b; font-size: 0.7rem; font-weight: 700; gap: 1px; transition: 0.3s; flex: 1; }
+        .bottom-nav-item i { font-size: 1.2rem; transition: 0.3s; }
+        .bottom-nav-item.active { color: #22c55e; }
+        .bottom-nav-item.active i { transform: translateY(-2px); }
+
+        /* ===== MOBILE HEADER ===== */
+        .mobile-search-header { display: none; background: #0f1c17; padding: 10px 15px; position: sticky; top: 0; z-index: 1500; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .navbar { display: none; }
+            .mobile-search-header { display: block !important; background: #0f1c17 !important; }
+            .mobile-toggle { display: block !important; font-size: 1.5rem !important; color: white !important; background: none; border: none; cursor: pointer; }
+            .bottom-nav { display: flex !important; }
+            body { padding-bottom: 0 !important; }
+
+            /* Footer Mobile Styles */
+            footer { padding: 35px 12px 70px !important; width: 100% !important; overflow: hidden !important; }
+            .footer-grid { 
+                display: grid !important; 
+                grid-template-columns: 1fr 0.8fr 1.2fr !important;
+                gap: 10px !important;
+                text-align: left !important; 
+                padding: 0 8px 30px !important; 
+                margin: 0 !important;
+                width: 100% !important;
+                align-items: start !important;
+            }
+            .footer-brand-col { text-align: left !important; padding: 0 !important; margin: 0 !important; }
+            .footer-brand-col .flabel { justify-content: flex-start !important; gap: 8px !important; margin-bottom: 10px !important; } 
+            .footer-brand-col .flogo { width: 30px !important; height: 30px !important; font-size: 0.8rem !important; border-radius: 8px !important; }
+            .footer-brand-col h2 { font-size: 1rem !important; margin: 0 !important; line-height: 30px !important; color: white !important; font-weight: 900 !important; }
+            .footer-brand-col p { font-size: 0.68rem !important; line-height: 1.4 !important; margin-top: 8px !important; color: rgba(255,255,255,0.5) !important; }
+            .footer-col { padding-top: 0 !important; margin-top: 0 !important; }
+            .footer-col h4 { font-size: 0.8rem !important; margin-bottom: 10px !important; margin-top: 0 !important; padding-top: 0 !important; white-space: nowrap !important; color: white !important; font-weight: 900 !important; line-height: 30px !important; letter-spacing: 0.3px !important; }
+            .footer-links a { font-size: 0.65rem !important; gap: 4px !important; padding: 3px 0 !important; color: rgba(255,255,255,0.5) !important; white-space: nowrap !important; }
+            .footer-links li { margin-bottom: 5px !important; }
+
+            .footer-bottom { padding: 18px 10px !important; border-top: 1px solid rgba(255,255,255,0.05) !important; }
+            .footer-bottom p { font-size: 0.7rem !important; color: white !important; font-weight: 700 !important; text-align: center !important; white-space: normal !important; line-height: 1.6 !important; }
+
+            .hero { padding: 40px 15px; text-align: left; overflow: hidden; width: 100%; }
+            .hero-inner { grid-template-columns: 1.2fr 1fr; gap: 10px; align-items: center; text-align: left !important; }
+            .hero h2 { font-size: 1.4rem; line-height: 1.2; margin-bottom: 10px; text-align: left !important; }
+            .hero p { font-size: 0.75rem; line-height: 1.4; margin-bottom: 15px; max-width: 100%; text-align: left !important; }
+            .cta-group { display: flex; flex-wrap: nowrap; gap: 8px; margin-bottom: 0; justify-content: flex-start !important; }
+            .btn-main, .btn-outline { padding: 10px 14px; font-size: 0.7rem; white-space: nowrap; }
+            .hero-img-wrap { display: block; max-width: 100%; margin: 0; }
+            .hero-img-wrap img { transform: none !important; border-radius: 12px !important; box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important; }
+
+            .section-header { margin-bottom: 20px !important; text-align: center; }
+            .section-header h2 { font-size: 1.8rem; margin-bottom: 10px; }
+            .section-header p { font-size: 0.9rem; margin: 0 auto; }
+            .section-tag { font-size: 0.7rem; padding: 6px 15px; margin-bottom: 15px; }
+
+            .shops-section { padding-left: 0 !important; padding-right: 0 !important; }
+            .shops-grid { 
+                grid-template-columns: repeat(2, 1fr) !important; 
+                gap: 10px !important; 
+                padding: 0 10px !important;
+            }
+            .shop-card { 
+                border-radius: 24px !important; 
+                position: relative !important; 
+                display: flex !important; 
+                flex-direction: column !important; 
+                background: white !important;
+                box-shadow: 0 12px 30px rgba(0,0,0,0.08) !important;
+                border: 1px solid rgba(0,0,0,0.03) !important;
+                overflow: hidden !important;
+                transition: transform 0.3s ease !important;
+            }
+            .shop-img { height: 170px !important; border-radius: 24px 24px 0 0 !important; }
+            .shop-info { padding: 8px !important; flex: 1 !important; display: flex !important; flex-direction: column !important; }
+            .shop-info h3 { font-size: 0.9rem !important; margin-bottom: 4px !important; font-weight: 850 !important; color: #0f172a !important; letter-spacing: -0.3px !important; }
+            .shop-loc { font-size: 0.65rem !important; margin-bottom: 8px !important; color: #64748b !important; font-weight: 600 !important; }
+            .btn-shop { 
+                padding: 10px 0 !important; 
+                font-size: 0.85rem !important; 
+                border-radius: 12px !important; 
+                margin-top: auto !important; 
+                background: linear-gradient(135deg, #1e1b4b, #6d28d9) !important;
+                font-weight: 800 !important;
+                letter-spacing: -0.2px !important;
+                color: white !important;
+                text-decoration: none !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                box-shadow: 0 8px 20px rgba(109, 40, 217, 0.25) !important;
+            }
+
+            /* Premium Card Badges */
+            .rating-badge { position: absolute; bottom: 10px; left: 10px; background: #388e3c; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: 800; display: flex; align-items: center; gap: 3px; z-index: 5; }
+            .wishlist-btn { position: absolute; top: 10px; right: 10px; background: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #cbd5e1; font-size: 0.8rem; z-index: 5; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+            .trending-tag { position: absolute; top: 10px; left: 10px; background: #f97316; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 800; z-index: 5; text-transform: uppercase; }
+
+            .steps-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .step-card { padding: 20px 15px; border-radius: 20px; }
+            .step-num { width: 50px; height: 50px; font-size: 1.5rem; margin-bottom: 15px; }
+            .step-card h3 { font-size: 1rem; }
+            .step-card p { font-size: 0.75rem; }
+
+            .founder-dark { padding: 40px 20px; }
+            .founder-name { font-size: 1.8rem; }
+            .founder-photo-ring { width: 180px; height: 180px; }
+            
+            .footer-bottom p span { display: block !important; margin-top: 8px !important; }
+        }
+
+        /* Mobile Sidebar Overlay */
+        .mobile-sidebar {
+            position: fixed; top: 0; left: -100%; width: 280px; height: 100vh;
+            background: #122b27; z-index: 3000; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 40px 25px; box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+        }
+        .mobile-sidebar.active { left: 0; }
+        .mobile-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+            z-index: 2999; display: none;
+        }
+        .mobile-overlay.active { display: block; }
+        .sidebar-links { list-style: none; margin-top: 40px; }
+        .sidebar-links li { margin-bottom: 25px; }
+        .sidebar-links a { color: white; text-decoration: none; font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 15px; }
+        .sidebar-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 1.5rem; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('home') }}" class="brand">
+                <div class="logo-icon"><i class="fas fa-utensils"></i></div>
+                <h1>FoodExpress</h1>
+            </a>
+            <div class="nav-menu">
+                <a href="{{ url_for('home') }}" class="active"><i class="fas fa-home"></i> Home</a>
+                <a href="{{ url_for('shops_list') }}"><i class="fas fa-store"></i> Shops</a>
+                <a href="#founder"><i class="fas fa-user-tie"></i> Founder</a>
+                {% if session.user_id %}
+                    <a href="{{ url_for('cart') }}" class="cart-nav"><i class="fas fa-shopping-bag"></i> Cart <span class="cart-badge" id="cart-count">0</span></a>
+                    <a href="{{ url_for('my_orders') }}"><i class="fas fa-receipt"></i> My Orders</a>
+                    <a href="{{ url_for('profile') }}" title="Profile">
+                        <span class="user-name-nav">{{ session.user_name }}</span>
+                        <i class="fas fa-user-circle" style="color: white;"></i>
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Login</a>
+                    <a href="{{ url_for('register') }}" class="btn-register-menu">Register</a>
+                {% endif %}
+            </div>
+            <button class="mobile-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <!-- Mobile Header (same style as shop page) -->
+    <div class="mobile-search-header" style="padding-bottom: 15px;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <a href="{{ url_for('home') }}" class="brand" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+                <div class="logo-icon" style="width: 30px; height: 30px; background: #22c55e; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; box-shadow: 0 4px 10px rgba(34,197,94,0.3);">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <span style="font-size: 1.1rem; font-weight: 800; letter-spacing: -0.5px; color: white;">FoodExpress</span>
+            </a>
+            <div style="display: flex; align-items: center; gap: 18px; color: white;">
+                {% if session.user_id %}
+                    <a href="{{ url_for('cart') }}" style="color:white; position:relative; font-size: 1.1rem;">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-dot" style="position:absolute; top:-8px; right:-8px; width:15px; height:15px; font-size:9px; background:#ef4444; border-radius:50%; color:white; display:flex; align-items:center; justify-content:center; font-weight:800;" id="cart-count-mobile">0</span>
+                    </a>
+                    <a href="{{ url_for('profile') }}" style="color:white; display:flex; align-items:center; text-decoration:none;">
+                        <i class="fas fa-user-circle" style="font-size: 1.35rem;"></i>
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" style="color:white; font-size: 1.1rem; text-decoration: none;">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </a>
+                {% endif %}
+                <button onclick="toggleSidebar()" style="background:none; border:none; color:white; font-size:1.2rem; padding:0; cursor:pointer;">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+<!-- Mobile Sidebar -->
+<div class="mobile-overlay" id="mobileOverlay" onclick="toggleSidebar()"></div>
+<div class="mobile-sidebar" id="mobileSidebar">
+    <div class="sidebar-close" onclick="toggleSidebar()"><i class="fas fa-times"></i></div>
+    <a href="{{ url_for('home') }}" class="brand" style="text-decoration: none; display: flex; align-items: center; gap: 12px;">
+        <div class="logo-icon"><i class="fas fa-utensils"></i></div>
+        <span class="brand-name" style="color: white;">FoodExpress</span>
+    </a>
+    <ul class="sidebar-links">
+        <li><a href="{{ url_for('home') }}"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="{{ url_for('shops_list') }}"><i class="fas fa-store"></i> Browse Shops</a></li>
+        {% if session.user_id %}
+            <li><a href="{{ url_for('cart') }}"><i class="fas fa-shopping-cart"></i> My Cart</a></li>
+            <li><a href="{{ url_for('my_orders') }}"><i class="fas fa-receipt"></i> My Orders</a></li>
+            <li><a href="{{ url_for('profile') }}"><i class="fas fa-user-circle"></i> My Profile</a></li>
+            <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        {% else %}
+            <li><a href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+            <li><a href="{{ url_for('register') }}"><i class="fas fa-user-plus"></i> Register Now</a></li>
+        {% endif %}
+    </ul>
+</div>
+
+<!-- Bottom Navigation for Mobile -->
+<div class="bottom-nav">
+    <div class="bottom-nav-inner">
+        <a href="{{ url_for('home') }}" class="bottom-nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="{{ url_for('shops_list') }}" class="bottom-nav-item">
+            <i class="fas fa-search"></i>
+            <span>Explore</span>
+        </a>
+        {% if session.user_id %}
+            <a href="{{ url_for('cart') }}" class="bottom-nav-item">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Cart</span>
+            </a>
+            <a href="{{ url_for('my_orders') }}" class="bottom-nav-item">
+                <i class="fas fa-receipt"></i>
+                <span>My Order</span>
+            </a>
+            <a href="{{ url_for('profile') }}" class="bottom-nav-item">
+                <i class="fas fa-user-circle"></i>
+                <span>Profile</span>
+            </a>
+        {% else %}
+            <a href="{{ url_for('login') }}" class="bottom-nav-item">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Login</span>
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+    <div class="hero-blob1"></div>
+    <div class="hero-blob2"></div>
+    <div class="hero-inner">
+        <div class="hero-content">
+            <h2>Skip the Queue.<br><span class="highlight">Order Smart</span>,<br>Eat Fresh.</h2>
+            <p>Order from your favorite LawGate & LPU shops. Hot, fresh meals delivered straight to your hostel, library, or cabin in minutes.</p>
+            <div class="cta-group">
+                <a href="#shops" class="btn-main">Browse Menu <i class="fas fa-arrow-right"></i></a>
+                <a href="{{ url_for('shops_list') }}" class="btn-outline">View All Shops</a>
+            </div>
+        </div>
+        <div class="hero-img-wrap">
+            <img src="/static/hero_food_dish2.png" alt="Premium Indian Dish" style="width:100%; border-radius:32px; box-shadow:0 40px 80px rgba(0,0,0,0.4); transform:rotate(2deg); transition:0.5s;">
+        </div>
+    </div>
+</section>
+
+<!-- ===== MARQUEE ===== -->
+<div class="marquee-strip">
+    <div class="marquee-inner">
+        {% for i in range(2) %}
+        <span class="marquee-item"><i class="fas fa-star"></i> 20+ Verified Shops</span>
+        <span class="marquee-item"><i class="fas fa-clock"></i> 15 Min Delivery</span>
+        <span class="marquee-item"><i class="fas fa-check-circle"></i> Fresh Ingredients</span>
+        <span class="marquee-item"><i class="fas fa-wallet"></i> Best Price Guarantee</span>
+        <span class="marquee-item"><i class="fas fa-truck"></i> Real-time Tracking</span>
+        <span class="marquee-item"><i class="fas fa-lock"></i> Secure Payments</span>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- ===== HOW IT WORKS ===== -->
+<section class="section-how" id="how-it-works">
+    <div class="section-header">
+        <div class="section-tag">Simple Steps</div>
+        <h2>Order in Seconds</h2>
+        <p>Your favorite meal is just a few clicks away. Follow our streamlined ordering process.</p>
+    </div>
+    <div class="steps-grid">
+        <div class="step-card">
+            <div class="step-num">🏪</div>
+            <h3>Select Shop</h3>
+            <p>Pick your favorite spot.</p>
+        </div>
+        <div class="step-card">
+            <div class="step-num">🍔</div>
+            <h3>Pick Meals</h3>
+            <p>Choose tasty dishes.</p>
+        </div>
+        <div class="step-card">
+            <div class="step-num" style="color: #ea4335;"><i class="fas fa-map-marker-alt"></i></div>
+            <h3>Set Location</h3>
+            <p>Where to deliver?</p>
+        </div>
+        <div class="step-card">
+            <div class="step-num">🎉</div>
+            <h3>Enjoy Food</h3>
+            <p>Fresh meals delivered fast.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ===== SHOPS ===== -->
+<section class="shops-section" id="shops">
+    <div class="section-header">
+        <div class="section-tag tag-vibrant">Order Now</div>
+        <h2>Popular Food Shops</h2>
+        <p>Discover amazing food from verified shops near you</p>
+    </div>
+    <div class="shops-grid">
+        {% for shop in shops[:8] %}
+        <div class="shop-card">
+            
+            <div class="shop-img">
+                {% if shop.logo_path %}
+                    <img src="/{{ shop.logo_path }}" 
+                         onerror="this.src='https://images.unsplash.com/photo-1552566626-52f8b828add9?w=500&q=80'"
+                         alt="{{ shop.name }}">
+                {% else %}
+                    <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=500&q=80" alt="{{ shop.name }}">
+                {% endif %}
+            </div>
+            <div class="shop-info">
+                <h3>{{ shop.name }}</h3>
+                <div class="shop-loc"><i class="fas fa-map-marker-alt"></i> {{ shop.location or 'Campus Hub' }}</div>
+                <a href="{{ url_for('shop_menu', shop_id=shop.id) }}" class="btn-shop">Explore Menu</a>
+            </div>
+        </div>
+        {% else %}
+        <div style="grid-column:1/-1; text-align:center; padding:80px 20px;">
+            <i class="fas fa-store-slash" style="font-size:3rem; color:#cbd5e1; display:block; margin-bottom:16px;"></i>
+            <h3 style="color:#94a3b8;">No Active Shops</h3>
+            <p style="color:#cbd5e1; margin-top:8px;">We're bringing more vendors online soon!</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- ===== FOUNDER ===== -->
+<section class="founder-dark" id="founder">
+    <div class="founder-dark-blob1"></div>
+    <div class="founder-dark-blob2"></div>
+    <div class="founder-dark-inner">
+        <!-- Top ornament -->
+        <div class="founder-ornament" style="margin-bottom:30px;">
+            <div class="line-r"></div>
+            <span>✦ MEET THE CREATOR ✦</span>
+            <div class="line-l"></div>
+        </div>
+        <!-- Photo -->
+        <div class="founder-photo-ring">
+            <img src="/static/azharpic.jpeg" alt="MD Azhar">
+            <div class="founder-online-dot"></div>
+        </div>
+        <!-- Name -->
+        <h2 class="founder-name">MD Azhar</h2>
+        <!-- Role divider -->
+        <div class="founder-role-line">
+            <div class="rl"></div>
+            <span>Founder &amp; Developer</span>
+            <div class="ll"></div>
+        </div>
+        <!-- Tagline -->
+        <p class="founder-tagline">Built to help busy students &amp; people save time</p>
+        <!-- Bottom ornament -->
+        <div class="founder-bottom-ornament">
+            <div class="bl"></div>
+            <span>✦</span>
+            <div class="br"></div>
+        </div>
+    </div>
+</section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="footer-grid">
+            <!-- Brand -->
+            <div class="footer-brand-col">
+                <div class="flabel">
+                    <div class="flogo"><i class="fas fa-utensils"></i></div>
+                    <h2>FoodExpress</h2>
+                </div>
+                <p>A premium food ordering experience for students and faculty across LPU &amp; LawGate. Fresh food, fast delivery, every time.</p>
+            </div>
+            <!-- Quick Links -->
+            <div class="footer-col quick-links">
+                <div class="quick-links-inner">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('home') }}"><i class="fas fa-chevron-right"></i> Home</a></li>
+                        <li><a href="{{ url_for('shops_list') }}"><i class="fas fa-chevron-right"></i> All Shops</a></li>
+                        <li><a href="{{ url_for('home') }}#founder"><i class="fas fa-chevron-right"></i> Founder</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Support -->
+            <div class="footer-col support-col">
+                <div class="support-inner">
+                    <h4>Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('my_orders') }}"><i class="fas fa-chevron-right"></i> Track Order</a></li>
+                        <li><a href="{{ url_for('login') }}"><i class="fas fa-chevron-right"></i> Login</a></li>
+                        <li><a href="{{ url_for('register') }}"><i class="fas fa-chevron-right"></i> Register</a></li>
+                        <li><a href="mailto:mdazhark735@gmail.com"><i class="fas fa-envelope"></i> mdazhark735@gmail.com</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 FoodExpress — Made by MD Azhar | Built for everyone, loved by students</p>
+        </div>
+    </footer>
+
+<script>
+    // Cart count
+    fetch('/get_cart_count').then(r => r.json()).then(data => {
+        const el = document.getElementById('cart-count');
+        if (el) el.innerText = data.count;
+    }).catch(() => {});
+
+    // Mobile Sidebar Toggle
+    function toggleSidebar() {
+        document.getElementById('mobileSidebar').classList.toggle('active');
+        document.getElementById('mobileOverlay').classList.toggle('active');
+        document.body.style.overflow = document.getElementById('mobileSidebar').classList.contains('active') ? 'hidden' : '';
+    }
+
+    // PWA Service Worker Registration
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/static/sw.js').then(function(registration) {
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            }, function(err) {
+                console.log('ServiceWorker registration failed: ', err);
+            });
+        });
+    }
+</script>
+
+</body>
+</html>

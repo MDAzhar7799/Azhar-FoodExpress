@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed - FoodExpress</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --m-white: #ffffff;
+            --m-bg: #f8fafc;
+            --m-green-dark: #0f1c17;
+            --m-green-mid: #1a3a2a;
+            --m-green-light: #2d6a4f;
+            --m-neon: #22c55e;
+            --m-text: #1e293b;
+            --m-muted: #64748b;
+            --m-border: #f1f5f9;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(180deg, #f5f3ff 0%, #ffffff 100%);
+            color: var(--m-text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: linear-gradient(135deg, var(--m-green-dark) 0%, var(--m-green-mid) 100%);
+            position: sticky; top: 0; z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+        }
+        .nav-container {
+            max-width: 1300px; margin: auto;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 13px 24px;
+        }
+        .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-icon {
+            width: 44px; height: 44px;
+            background: linear-gradient(135deg, var(--m-neon), #16a34a);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; color: white;
+            box-shadow: 0 4px 15px rgba(34,197,94,0.4);
+        }
+        .brand h1 { font-size: 1.4rem; font-weight: 800; color: white; letter-spacing: -0.3px; }
+        .nav-menu { display: flex; align-items: center; gap: 4px; }
+        .nav-menu a {
+            color: rgba(255,255,255,0.85); text-decoration: none;
+            font-weight: 500; font-size: 0.9rem;
+            padding: 8px 14px; border-radius: 8px;
+            display: flex; align-items: center; gap: 7px;
+            transition: all 0.25s;
+        }
+        .nav-menu a:hover { background: rgba(255,255,255,0.15); color: white; }
+        .user-name-nav { color: white; font-weight: 700; margin-right: 5px; }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            background: linear-gradient(180deg, #060d0c 0%, #030807 100%);
+            padding: 85px 20px 65px; text-align: center; position: relative;
+        }
+        .page-header::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(34,197,94,0.12), transparent 75%);
+            pointer-events: none;
+        }
+        .header-tag {
+            background: #000000;
+            color: #f97316; border: 1px solid rgba(249, 115, 22, 0.5); 
+            padding: 8px 22px; border-radius: 100px;
+            font-size: 0.82rem; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 2px;
+            display: inline-block; margin-bottom: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+        .page-header h1 {
+            font-size: 3.8rem; font-weight: 900; color: white; letter-spacing: -2px; margin-bottom: 15px;
+        }
+        .page-header p { color: rgba(255,255,255,0.7); font-size: 1.2rem; font-weight: 500; max-width: 600px; margin: auto; }
+
+        .container { max-width: 650px; margin: 50px auto 80px; padding: 0 24px; flex: 1; }
+
+        .success-card {
+            background: white; border-radius: 35px; overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.06);
+            border: none;
+            padding: 45px;
+            text-align: center;
+            animation: fadeUp 0.6s ease both;
+        }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(30px);} to{opacity:1;transform:translateY(0);} }
+
+        .lottie-check {
+            width: 100px; height: 100px; background: var(--m-neon);
+            border-radius: 30px; margin: 0 auto 30px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 3rem; color: white;
+            box-shadow: 0 15px 30px rgba(34,197,94,0.3);
+            animation: iconPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s both;
+        }
+        @keyframes iconPop { 0%{transform:scale(0) rotate(-45deg);} 70%{transform:scale(1.2) rotate(10deg);} 100%{transform:scale(1) rotate(0);} }
+
+        .success-card h2 { font-size: 2.2rem; font-weight: 900; color: #0f172a; margin-bottom: 10px; letter-spacing: -1px; }
+        .success-card p { color: var(--m-muted); font-size: 1.05rem; font-weight: 500; margin-bottom: 35px; }
+
+        .manifest-card {
+            background: #f8fafc; border-radius: 25px; padding: 30px;
+            margin-bottom: 35px; text-align: left;
+        }
+        .row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px dashed #cbd5e1; }
+        .row:last-child { border-bottom: none; margin-top: 15px; padding-top: 15px; border-top: 2px dashed #cbd5e1; }
+        
+        .row label { font-size: 0.95rem; font-weight: 700; color: var(--m-muted); }
+        .row span { font-size: 1.05rem; font-weight: 800; color: #0f172a; }
+        .row.total span { font-size: 1.8rem; font-weight: 950; color: #0f172a; letter-spacing: -1px; }
+        
+        .order-id-tag { background: rgba(34,197,94,0.15); color: #16a34a; padding: 4px 12px; border-radius: 10px; font-weight: 800; font-size: 0.95rem; }
+
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        @media(max-width: 500px) { .action-grid { grid-template-columns: 1fr; } }
+        
+        .btn { padding: 18px; border-radius: 18px; font-weight: 800; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-track { background: #1eb556; color: white; box-shadow: 0 10px 25px rgba(34,197,94,0.3); border: none; cursor: pointer; }
+        .btn-track:hover { transform: translateY(-4px); box-shadow: 0 15px 35px rgba(34,197,94,0.4); }
+        .btn-cancel { background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; cursor: pointer; transition: 0.3s; }
+        .btn-cancel:hover { background: #ef4444; color: white; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3); }
+        
+        .details-section { text-align: left; margin-top: 30px; border-top: 2px solid #f1f5f9; padding-top: 30px; }
+        .details-section h3 { font-size: 1.1rem; font-weight: 800; color: #0f172a; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .info-group { margin-bottom: 15px; }
+        .info-group label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--m-muted); text-transform: uppercase; margin-bottom: 4px; }
+        .info-group p { font-size: 1rem; font-weight: 700; color: #1e293b; margin-bottom: 0; }
+        
+        .item-list { margin-top: 25px; display: flex; flex-direction: column; gap: 15px; }
+        .item-row { display: flex; align-items: center; gap: 15px; background: #f8fafc; padding: 15px; border-radius: 20px; }
+        .item-img { width: 80px; height: 80px; border-radius: 12px; object-fit: cover; background: #e2e8f0; }
+        .item-info { flex: 1; }
+        .item-info h4 { font-size: 1rem; font-weight: 800; color: #0f172a; margin-bottom: 4px; }
+        .item-info p { font-size: 0.9rem; font-weight: 600; color: var(--m-muted); margin-bottom: 0; }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: linear-gradient(135deg, #020617, #0f172a);
+            padding: 80px 30px 0;
+            color: rgba(255,255,255,0.4); font-family: 'Outfit', sans-serif;
+        }
+        .footer-grid {
+            max-width: 1300px; margin: auto;
+            display: grid; grid-template-columns: 2fr 1fr 1fr;
+            gap: 60px; padding-bottom: 60px;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+        .footer-brand-col .flabel {
+            display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+        }
+        .footer-brand-col .flogo {
+            width: 42px; height: 42px; border-radius: 12px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; color: white;
+        }
+        .footer-brand-col h2 { font-size: 1.4rem; font-weight: 900; color: white; }
+        .footer-brand-col p { color: rgba(255,255,255,0.4); font-size: 0.95rem; line-height: 1.75; max-width: 380px; }
+        .footer-col h4 { font-size: 1rem; font-weight: 800; color: white; margin-bottom: 22px; }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a {
+            color: rgba(255,255,255,0.4); text-decoration: none;
+            font-size: 0.9rem; font-weight: 500; transition: 0.3s;
+            display: flex; align-items: center; gap: 7px;
+        }
+        .footer-links a:hover { color: #4ade80; padding-left: 4px; }
+        .footer-links a i { font-size: 0.75rem; color: #22c55e; }
+        .footer-bottom {
+            max-width: 1300px; margin: auto; padding: 30px 0;
+            text-align: center; color: #ffffff;
+            font-size: 0.9rem; font-weight: 700;
+        }
+        /* ===== MOBILE HEADER ===== */
+        .mobile-search-header { display: none; background: #0f1c17; padding: 10px 15px; position: sticky; top: 0; z-index: 1500; }
+
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: white; height: 65px;
+            display: none; align-items: center; justify-content: space-around;
+            z-index: 2000; box-shadow: 0 -2px 15px rgba(0,0,0,0.08);
+            border-top: 1px solid #f1f5f9;
+        }
+        .bottom-nav-inner {
+            display: flex; width: 100%; justify-content: space-around; align-items: center;
+        }
+        .bottom-nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #64748b; font-size: 0.7rem; font-weight: 700; gap: 1px; transition: 0.3s; flex: 1; }
+        .bottom-nav-item i { font-size: 1.2rem; transition: 0.3s; }
+        .bottom-nav-item.active { color: #22c55e; }
+        .bottom-nav-item.active i { transform: translateY(-2px); }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .navbar { display: none; }
+            .mobile-search-header { display: block !important; background: #0f1c17 !important; }
+            .bottom-nav { display: flex !important; }
+            body { padding-bottom: 0 !important; }
+
+            .page-header { padding: 45px 20px 35px; }
+            .page-header h1 { font-size: 2.2rem; letter-spacing: -1px; }
+            .page-header p { font-size: 0.85rem; }
+            .header-tag { font-size: 0.65rem; padding: 6px 15px; margin-bottom: 15px; }
+
+            .container { margin: 20px auto 40px; padding: 0 15px; }
+            .success-card { padding: 30px 20px; border-radius: 25px; }
+            .lottie-check { width: 70px; height: 70px; font-size: 2rem; border-radius: 20px; margin-bottom: 20px; }
+            .success-card h2 { font-size: 1.6rem; }
+            .success-card p { font-size: 0.9rem; }
+            
+            .manifest-card { padding: 20px; border-radius: 18px; }
+            .row label { font-size: 0.8rem; }
+            .row span { font-size: 0.9rem; }
+            .row.total span { font-size: 1.5rem; }
+            
+            .item-row { padding: 12px; border-radius: 15px; }
+            .item-img { width: 60px; height: 60px; }
+            .item-info h4 { font-size: 0.9rem; }
+            
+            .btn { padding: 15px; font-size: 0.9rem; }
+
+            /* Footer Mobile Styles */
+            footer { padding: 35px 12px 70px !important; width: 100% !important; overflow: hidden !important; }
+            .footer-grid { 
+                display: grid !important; 
+                grid-template-columns: 1.1fr 0.8fr 1.1fr !important;
+                gap: 10px !important;
+                text-align: left !important; 
+                padding: 0 8px 30px !important; 
+                margin: 0 !important;
+                width: 100% !important;
+                align-items: start !important;
+            }
+            .footer-brand-col { text-align: left !important; padding: 0 !important; margin: 0 !important; }
+            .footer-brand-col .flabel { justify-content: flex-start !important; gap: 8px !important; margin-bottom: 10px !important; } 
+            .footer-brand-col .flogo { width: 30px !important; height: 30px !important; font-size: 0.8rem !important; border-radius: 8px !important; }
+            .footer-brand-col h2 { font-size: 1rem !important; margin: 0 !important; line-height: 30px !important; color: white !important; font-weight: 900 !important; }
+            .footer-brand-col p { font-size: 0.68rem !important; line-height: 1.4 !important; margin-top: 8px !important; color: rgba(255,255,255,0.5) !important; }
+            .footer-col { padding-top: 0 !important; margin-top: 0 !important; }
+            .footer-col h4 { font-size: 0.75rem !important; margin-bottom: 10px !important; margin-top: 0 !important; padding-top: 0 !important; white-space: nowrap !important; color: white !important; font-weight: 900 !important; line-height: 30px !important; }
+            .footer-links a { font-size: 0.65rem !important; gap: 4px !important; padding: 3px 0 !important; color: rgba(255,255,255,0.5) !important; white-space: nowrap !important; }
+            .footer-links li { margin-bottom: 5px !important; }
+
+            .footer-bottom { padding: 18px 10px !important; border-top: 1px solid rgba(255,255,255,0.05) !important; }
+            .footer-bottom p { font-size: 0.7rem !important; color: white !important; font-weight: 700 !important; text-align: center !important; white-space: normal !important; line-height: 1.6 !important; }
+            .mobile-toggle { display: block !important; }
+        }
+
+        .mobile-toggle { display: none; }
+
+        /* Mobile Sidebar Overlay (Global) */
+        .mobile-sidebar {
+            position: fixed; top: 0; left: -100%; width: 280px; height: 100vh;
+            background: #122b27; z-index: 3000; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 40px 25px; box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+        }
+        .mobile-sidebar.active { left: 0; }
+        .mobile-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+            z-index: 2999; display: none;
+        }
+        .mobile-overlay.active { display: block; }
+        .sidebar-links { list-style: none; margin-top: 40px; }
+        .sidebar-links li { margin-bottom: 25px; }
+        .sidebar-links a { color: white; text-decoration: none; font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 15px; }
+        .sidebar-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 1.5rem; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('home') }}" class="brand">
+                <div class="logo-icon"><i class="fas fa-utensils"></i></div>
+                <h1>FoodExpress</h1>
+            </a>
+            <div class="nav-menu">
+                <a href="{{ url_for('home') }}"><i class="fas fa-home"></i> Home</a>
+                <a href="{{ url_for('shops_list') }}"><i class="fas fa-store"></i> Shops</a>
+                <a href="{{ url_for('cart') }}"><i class="fas fa-shopping-bag"></i> Cart <span class="cart-badge" id="cart-count">0</span></a>
+                <a href="{{ url_for('my_orders') }}"><i class="fas fa-receipt"></i> My Orders</a>
+                <a href="{{ url_for('profile') }}" title="Profile">
+                    <span class="user-name-nav">{{ session.user_name }}</span>
+                    <i class="fas fa-user-circle" style="color: white;"></i>
+                </a>
+            </div>
+            <button class="mobile-toggle" onclick="toggleSidebar()" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;"><i class="fas fa-bars"></i></button>
+        </div>
+    </nav>
+    
+    <!-- Mobile Header -->
+    <div class="mobile-search-header" style="padding-bottom: 15px;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <a href="{{ url_for('home') }}" class="brand" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+                <div class="logo-icon" style="width: 30px; height: 30px; background: #22c55e; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; box-shadow: 0 4px 10px rgba(34,197,94,0.3);">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <span style="font-size: 1.1rem; font-weight: 800; letter-spacing: -0.5px; color: white;">FoodExpress</span>
+            </a>
+            <div style="display: flex; align-items: center; gap: 18px; color: white;">
+                {% if session.user_id %}
+                    <a href="{{ url_for('cart') }}" style="color:white; position:relative; font-size: 1.1rem;">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-dot" style="position:absolute; top:-8px; right:-8px; width:15px; height:15px; font-size:9px; background:#ef4444; border-radius:50%; color:white; display:flex; align-items:center; justify-content:center; font-weight:800;" id="cart-count-mobile">0</span>
+                    </a>
+                    <a href="{{ url_for('profile') }}" style="color:white; display:flex; align-items:center; text-decoration:none;">
+                        <i class="fas fa-user-circle" style="font-size: 1.35rem;"></i>
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" style="color:white; font-size: 1.1rem; text-decoration: none;">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </a>
+                {% endif %}
+                <button onclick="toggleSidebar()" style="background:none; border:none; color:white; font-size:1.2rem; padding:0; cursor:pointer;">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Sidebar -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="toggleSidebar()"></div>
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <div class="sidebar-close" onclick="toggleSidebar()"><i class="fas fa-times"></i></div>
+        <a href="{{ url_for('home') }}" class="brand" style="text-decoration: none; display: flex; align-items: center; gap: 12px;">
+            <div class="logo-icon" style="width: 44px; height: 44px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: white;"><i class="fas fa-utensils"></i></div>
+            <span class="brand-name" style="color: white; font-weight: 900; font-size: 1.4rem;">FoodExpress</span>
+        </a>
+        <ul class="sidebar-links">
+            <li><a href="{{ url_for('home') }}"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="{{ url_for('shops_list') }}"><i class="fas fa-store"></i> Browse Shops</a></li>
+            {% if session.user_id %}
+                <li><a href="{{ url_for('cart') }}"><i class="fas fa-shopping-cart"></i> My Cart</a></li>
+                <li><a href="{{ url_for('my_orders') }}"><i class="fas fa-receipt"></i> My Orders</a></li>
+                <li><a href="{{ url_for('profile') }}"><i class="fas fa-user-circle"></i> My Profile</a></li>
+                <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            {% else %}
+                <li><a href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                <li><a href="{{ url_for('register') }}"><i class="fas fa-user-plus"></i> Register Now</a></li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="bottom-nav-inner">
+            <a href="{{ url_for('home') }}" class="bottom-nav-item">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="{{ url_for('shops_list') }}" class="bottom-nav-item">
+                <i class="fas fa-search"></i>
+                <span>Explore</span>
+            </a>
+            <a href="{{ url_for('cart') }}" class="bottom-nav-item">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Cart</span>
+            </a>
+            <a href="{{ url_for('my_orders') }}" class="bottom-nav-item">
+                <i class="fas fa-receipt"></i>
+                <span>My Order</span>
+            </a>
+            <a href="{{ url_for('profile') if session.user_id else url_for('login') }}" class="bottom-nav-item">
+                <i class="fas fa-user"></i>
+                <span>Account</span>
+            </a>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="header-tag">{{ 'Order Cancelled' if 'Cancelled' in order.order_status else 'Order Confirmed' }}</div>
+        <h1>{{ 'Cancelled' if 'Cancelled' in order.order_status else 'Success!' }}</h1>
+        <p>{{ 'This order has been cancelled.' if 'Cancelled' in order.order_status else 'Your order has been placed successfully!' }}</p>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div style="max-width: 650px; margin: 20px auto -30px; padding: 0 24px; position: relative; z-index: 100;">
+                {% for category, message in messages %}
+                    <div style="padding: 15px 20px; border-radius: 15px; margin-bottom: 15px; font-weight: 700; 
+                        {% if category == 'success' %} background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0;
+                        {% else %} background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; {% endif %}">
+                        <i class="fas {% if category == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"></i> {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="container">
+        <div class="success-card">
+            {% if 'Cancelled' in order.order_status %}
+            <div class="lottie-check" style="background: #ef4444; box-shadow: 0 15px 35px rgba(239, 68, 68, 0.3);">
+                <i class="fas fa-times"></i>
+            </div>
+            <h2>Order User Cancelled</h2>
+            <p>Your order was successfully cancelled and will not be prepared.</p>
+            {% else %}
+            <div class="lottie-check">
+                <i class="fas fa-check"></i>
+            </div>
+            <h2>Order Placed Successfully!</h2>
+            <p>We've received your order and are preparing it.</p>
+            {% endif %}
+            
+            <div class="manifest-card">
+                <div class="row">
+                    <label>Order ID</label>
+                    <span class="order-id-tag">#{{ order.order_number }}</span>
+                </div>
+                <div class="row">
+                    <label>Shop</label>
+                    <span>{{ order.shop_name }}</span>
+                </div>
+                <div class="row">
+                    <label>Shop Mobile</label>
+                    <span>{{ order.shop_phone or 'N/A' }}</span>
+                </div>
+                <div class="row">
+                    <label>Payment</label>
+                    <span>{{ 'UPI Online (Paid)' if order.payment_type == 'online' else 'Pay on Delivery' }}</span>
+                </div>
+                <div class="row total">
+                    <label>Total Amount</label>
+                    <span>₹{{ order.total_amount }}</span>
+                </div>
+            </div>
+
+            <div class="details-section">
+                <h3>Order Items</h3>
+                <div class="item-list">
+                    {% for item in order_items %}
+                    <div class="item-row">
+                        {% if item.image_path %}
+                            <img src="/{{ item.image_path }}" class="item-img" alt="{{ item.item_name }}">
+                        {% else %}
+                            <div class="item-img" style="display: flex; align-items: center; justify-content: center;"><i class="fas fa-hamburger" style="font-size: 1.5rem; color: #cbd5e1;"></i></div>
+                        {% endif %}
+                        <div class="item-info">
+                            <h4>{{ item.item_name }}</h4>
+                            <p>{{ item.quantity }} x ₹{{ item.price }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="details-section">
+                <h3>Delivery Information</h3>
+                <div class="info-group">
+                    <label>Customer Name</label>
+                    <p>{{ order.customer_name }}</p>
+                </div>
+                <div class="info-group">
+                    <label>Mobile Number</label>
+                    <p>{{ order.customer_phone }}</p>
+                </div>
+                <div class="info-group">
+                    <label>Delivery Address</label>
+                    <p>{{ order.delivery_address }}</p>
+                </div>
+            </div>
+
+            <div class="action-grid" style="margin-top: 40px;">
+                <a href="{{ url_for('track_order', order_number=order.order_number) }}" class="btn btn-track">
+                    Track Order <i class="fas fa-arrow-right"></i>
+                </a>
+                <script>
+                function confirmAndPrepareCancel(event) {
+                    console.log('Cancel button clicked...');
+                    const confirmed = confirm('Are you sure you want to cancel this order?');
+                    if (confirmed) {
+                        console.log('Cancellation confirmed by user.');
+                        return true;
+                    } else {
+                        console.log('Cancellation cancelled by user.');
+                        return false;
+                    }
+                }
+                </script>
+
+                {% if 'Cancelled' not in order.order_status %}
+                <form id="cancelOrderForm" action="{{ url_for('cancel_order', order_id=order.id) }}" method="POST" style="width: 100%;">
+                    <button type="submit" id="cancelBtn" class="btn btn-cancel" style="width: 100%;">
+                        <i class="fas fa-times"></i> Cancel Order
+                    </button>
+                </form>
+                {% else %}
+                <div class="btn btn-cancel" style="width: 100%; background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; cursor: default;">
+                    <i class="fas fa-ban"></i> Order {{ order.order_status }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand-col">
+                <div class="flabel">
+                    <div class="flogo"><i class="fas fa-utensils"></i></div>
+                <h2>FoodExpress</h2>
+                </div>
+                <p>A premium food ordering experience for students and faculty across LPU & LawGate. Fresh food, fast delivery, every time.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('home') }}"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    <li><a href="{{ url_for('shops_list') }}"><i class="fas fa-chevron-right"></i> All Shops</a></li>
+                    <li><a href="{{ url_for('home') }}#founder"><i class="fas fa-chevron-right"></i> Founder</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('my_orders') }}"><i class="fas fa-chevron-right"></i> Track Order</a></li>
+                    <li><a href="{{ url_for('login') }}"><i class="fas fa-chevron-right"></i> Login</a></li>
+                    <li><a href="{{ url_for('register') }}"><i class="fas fa-chevron-right"></i> Register</a></li>
+                    <li><a href="mailto:mdazhark735@gmail.com"><i class="fas fa-envelope"></i> mdazhark735@gmail.com</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 FoodExpress — Made by MD Azhar | Built for everyone, loved by students</p>
+        </div>
+    </footer>
+    <script>
+        function toggleSidebar() {
+            document.getElementById('mobileSidebar').classList.toggle('active');
+            document.getElementById('mobileOverlay').classList.toggle('active');
+            document.body.style.overflow = document.getElementById('mobileSidebar').classList.contains('active') ? 'hidden' : '';
+        }
+
+        function updateNavCartCount() {
+            localStorage.removeItem('food_cart');
+            const cartItems = JSON.parse(localStorage.getItem('food_cart') || '[]');
+            const count = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+            const badge = document.getElementById('cart-count');
+            const badgeMob = document.getElementById('cart-count-mobile');
+            if(badge) {
+                badge.innerText = count;
+                badge.style.display = count > 0 ? 'inline-block' : 'none';
+            }
+            if(badgeMob) {
+                badgeMob.innerText = count;
+                badgeMob.style.display = count > 0 ? 'flex' : 'none';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', updateNavCartCount);
+    </script>
+</body>
+</html>

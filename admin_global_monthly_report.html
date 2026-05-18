@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Monthly Analysis - FoodExpress Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-light: #f3f4f6;
+            --white: #ffffff;
+            --header-gradient: linear-gradient(to right, #1a3a32, #2d6a4f);
+            --text-dark: #111827;
+            --text-muted: #6b7280;
+            --blue: #3b82f6;
+            --green: #22c55e;
+            --amber: #f59e0b;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+ 
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: var(--header-gradient);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; }
+        .brand i { font-size: 1.4rem; background: rgba(255,255,255,0.2); padding: 8px; border-radius: 50%; }
+        .brand h1 { font-size: 1.25rem; font-weight: 700; }
+        @media (max-width: 768px) {
+            .navbar { display: none !important; }
+        }
+ 
+        .nav-links { display: flex; gap: 25px; align-items: center; }
+        .nav-item { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 500; display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+        .logout-btn {
+            background: #a7f3d0;
+            color: #ef4444;
+            padding: 10px 22px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: 0.3s;
+        }
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        
+        /* ===== FOOTER STYLES ===== */
+        .footer-main {
+            background: #020617;
+            padding: 80px 40px 40px;
+            color: #94a3b8;
+            margin-top: 100px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            text-align: left;
+        }
+        .footer-grid {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+        .footer-col h4 { color: white; font-weight: 800; margin-bottom: 25px; font-size: 1.1rem; }
+        .footer-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .footer-brand i { 
+            background: #22c55e; 
+            color: white; 
+            width: 50px; 
+            height: 50px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 14px; 
+            font-size: 1.6rem; 
+        }
+        .footer-brand h2 { 
+            color: white; 
+            font-size: 2rem; 
+            font-weight: 900; 
+            letter-spacing: -1.5px;
+            margin: 0;
+        }
+        .footer-desc { line-height: 1.6; font-size: 0.95rem; font-weight: 500; }
+        .footer-links { list-style: none; padding: 0; }
+        .footer-links li { margin-bottom: 15px; }
+        .footer-links a { color: #94a3b8; text-decoration: none; font-weight: 500; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
+        .footer-links a:hover { color: #22c55e; padding-left: 5px; }
+        .footer-links i { font-size: 0.7rem; }
+        .contact-item { display: flex; gap: 15px; margin-bottom: 20px; align-items: center; }
+        .contact-item i { color: #22c55e; font-size: 1.1rem; }
+        .contact-text { font-size: 0.9rem; font-weight: 500; line-height: 1.4; margin: 0; }
+        .copyright { text-align: center; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); font-weight: 700; font-size: 0.95rem; color: #ffffff; }
+
+        .copyright span { color: #ef4444; }
+ 
+        /* ===== CONTAINER ===== */
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+ 
+        .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--blue); text-decoration: none; font-weight: 800; font-size: 0.9rem; margin-bottom: 30px; }
+        .back-link:hover { text-decoration: underline; }
+ 
+        /* ===== REPORT HEADER ===== */
+        .report-header { background: #0f172a; border: 2px solid #ea580c; padding: 50px; border-radius: 32px; color: white; margin-bottom: 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 20px 40px rgba(234, 88, 12, 0.15); }
+        .header-main h2 { font-size: 0.85rem; font-weight: 900; color: #ea580c; text-transform: uppercase; letter-spacing: 2.5px; margin-bottom: 12px; }
+        .header-main h1 { font-size: 2.5rem; font-weight: 900; letter-spacing: -1.5px; }
+ 
+        .stat-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 25px 40px; border-radius: 20px; text-align: right; }
+        .stat-lab { display: block; font-size: 0.75rem; font-weight: 900; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .stat-val { display: block; font-size: 2.2rem; font-weight: 950; color: #ea580c; letter-spacing: -1px; }
+ 
+        /* ===== DATA TABLE ===== */
+        .card { background: white; border-radius: 32px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { padding: 25px 40px; background: #f9fafb; font-size: 0.75rem; font-weight: 900; color: var(--text-muted); text-transform: uppercase; border-bottom: 2px solid #f3f4f6; letter-spacing: 1.5px; }
+        td { padding: 30px 40px; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
+ 
+        .sk-name { font-weight: 900; font-size: 1.15rem; color: var(--text-dark); display: block; }
+        .sk-shop { font-size: 0.9rem; color: var(--blue); font-weight: 800; margin-top: 4px; display: block; }
+ 
+        .revenue-total { font-size: 1.3rem; font-weight: 950; color: #111827; }
+        .rev-badge { background: #f0fdf4; color: #16a34a; padding: 10px 20px; border-radius: 14px; font-weight: 900; border: 1px solid #dcfce7; }
+ 
+        footer { margin-top: 100px; padding: 80px 20px; text-align: center; color: var(--text-muted); background: #0f1c17; color: rgba(255,255,255,0.4); }
+        footer strong { color: #22c55e; }
+
+        /* ===== MOBILE COMPONENTS ===== */
+        .mobile-search-header { display: none; background: #0f1c17; padding: 10px 15px 15px; position: sticky; top: 0; z-index: 1500; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; height: 65px; display: none; align-items: center; justify-content: space-around; z-index: 2000; box-shadow: 0 -2px 15px rgba(0,0,0,0.08); border-top: 1px solid #f1f5f9; }
+        .bottom-nav-inner { display: flex; width: 100%; justify-content: space-around; align-items: center; }
+        .bottom-nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #64748b; font-size: 0.7rem; font-weight: 700; gap: 1px; transition: 0.3s; flex: 1; }
+        .bottom-nav-item i { font-size: 1.2rem; transition: 0.3s; }
+        .bottom-nav-item.active { color: #22c55e; }
+        .bottom-nav-item.active i { transform: translateY(-2px); }
+        .mobile-sidebar { position: fixed; top: 0; left: -100%; width: 280px; height: 100vh; background: #122b27; z-index: 3000; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); padding: 40px 25px; box-shadow: 20px 0 50px rgba(0,0,0,0.5); }
+        .mobile-sidebar.active { left: 0; }
+        .mobile-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 2999; display: none; }
+        .mobile-overlay.active { display: block; }
+        .sidebar-links { list-style: none; margin-top: 40px; padding: 0; }
+        .sidebar-links li { margin-bottom: 25px; }
+        .sidebar-links a { color: white; text-decoration: none; font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 15px; }
+        .sidebar-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 1.5rem; cursor: pointer; }
+
+        @media (max-width: 768px) {
+            .mobile-search-header { display: block !important; }
+            .bottom-nav { display: flex !important; }
+            body { padding-bottom: 0 !important; overflow-x: hidden !important; }
+
+            .container { margin: 25px auto 0 !important; padding: 0 15px !important; width: 100% !important; box-sizing: border-box !important; }
+            .report-header { flex-direction: column !important; padding: 35px 25px !important; gap: 25px !important; border-radius: 24px !important; text-align: center !important; }
+            .header-main h1 { font-size: 1.8rem !important; }
+            .stat-card { text-align: center !important; width: 100% !important; padding: 20px !important; }
+            .stat-val { font-size: 1.8rem !important; }
+
+            .card { background: transparent !important; box-shadow: none !important; border: none !important; }
+            table, thead, tbody, th, td, tr { display: block !important; width: 100% !important; }
+            thead { display: none !important; }
+            tr { background: white !important; padding: 20px !important; border-radius: 20px !important; margin-bottom: 15px !important; box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important; border: 1px solid #f1f5f9 !important; display: flex !important; flex-direction: column !important; gap: 10px !important; }
+            td { padding: 0 !important; border: none !important; text-align: left !important; }
+            td[style*="text-align: right"] { text-align: left !important; margin-top: 5px !important; }
+            
+            .sk-name { font-size: 1.1rem !important; }
+            .rev-badge { display: inline-block !important; padding: 10px 20px !important; width: auto !important; }
+
+            /* Mobile Responsive Footer (2-column premium) */
+            .footer-main { padding: 25px 10px 70px !important; width: 100% !important; overflow: hidden !important; margin-top: 50px !important; }
+            .footer-grid { 
+                display: grid !important; 
+                grid-template-columns: 1fr 1fr !important;
+                gap: 12px 10px !important;
+                text-align: left !important; 
+                padding: 0 8px 20px !important; 
+                margin: 0 !important;
+                width: 100% !important;
+                align-items: start !important;
+            }
+            .footer-col { padding: 0 !important; margin: 0 !important; }
+            .footer-brand { display: flex !important; align-items: center !important; gap: 6px !important; margin-bottom: 6px !important; } 
+            .footer-brand i { width: 26px !important; height: 26px !important; font-size: 0.75rem !important; border-radius: 6px !important; background: #22c55e !important; color: white !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+            .footer-brand h2 { font-size: 0.95rem !important; margin: 0 !important; line-height: 26px !important; color: white !important; font-weight: 900 !important; }
+            .footer-desc { font-size: 0.62rem !important; line-height: 1.35 !important; margin-top: 5px !important; color: rgba(255,255,255,0.5) !important; }
+            
+            .footer-col h4 { font-size: 0.78rem !important; margin-bottom: 6px !important; margin-top: 0 !important; padding-top: 0 !important; white-space: nowrap !important; color: white !important; font-weight: 900 !important; line-height: 26px !important; letter-spacing: 0.2px !important; }
+            
+            .footer-links a, .footer-links li { font-size: 0.63rem !important; gap: 4px !important; padding: 1px 0 !important; color: rgba(255,255,255,0.5) !important; white-space: nowrap !important; overflow: visible !important; justify-content: flex-start !important; }
+            .footer-links li { margin-bottom: 3px !important; display: flex !important; align-items: center !important; justify-content: flex-start !important; }
+            .contact-item { gap: 6px !important; margin-bottom: 3px !important; display: flex !important; align-items: center !important; }
+            .contact-item i { font-size: 0.8rem !important; color: #22c55e !important; }
+            .contact-text { font-size: 0.63rem !important; color: rgba(255,255,255,0.5) !important; margin: 0 !important; }
+            
+            .copyright { padding: 12px 8px !important; border-top: 1px solid rgba(255,255,255,0.05) !important; font-size: 0.7rem !important; color: white !important; font-weight: 700 !important; text-align: center !important; white-space: normal !important; line-height: 1.6 !important; }
+        }
+    </style>
+    <script>
+        function toggleSidebar() {
+            document.getElementById('mobileSidebar').classList.toggle('active');
+            document.getElementById('mobileOverlay').classList.toggle('active');
+            document.body.style.overflow = document.getElementById('mobileSidebar').classList.contains('active') ? 'hidden' : '';
+        }
+    </script>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{{ url_for('admin_dashboard') }}" class="brand">
+            <i class="fas fa-satellite-dish"></i>
+            <h1>FoodExpress Intelligence</h1>
+        </a>
+        <div class="nav-links">
+            <a href="{{ url_for('admin_dashboard') }}" class="nav-item">Dashboard</a>
+            <a href="{{ url_for('admin_shopkeepers') }}" class="nav-item">Shopkeepers</a>
+            <a href="{{ url_for('admin_logout') }}" class="logout-btn"><i class="fas fa-right-from-bracket"></i> Logout</a>
+        </div>
+    </nav>
+
+    <!-- Mobile Header -->
+    <div class="mobile-search-header">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <a href="{{ url_for('admin_dashboard') }}" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+                <div style="width: 30px; height: 30px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; box-shadow: 0 4px 10px rgba(34,197,94,0.3);">
+                    <i class="fas fa-satellite-dish"></i>
+                </div>
+                <span style="font-size: 0.95rem; font-weight: 800; letter-spacing: -0.3px; color: white;">FoodExpress - Admin</span>
+            </a>
+            <button onclick="toggleSidebar()" style="background:none; border:none; color:white; font-size:1.2rem; padding:0; cursor:pointer;">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Overlay & Sidebar -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="toggleSidebar()"></div>
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <div class="sidebar-close" onclick="toggleSidebar()"><i class="fas fa-times"></i></div>
+        <a href="{{ url_for('admin_dashboard') }}" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+            <div style="width: 44px; height: 44px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: white;"><i class="fas fa-satellite-dish"></i></div>
+            <span style="color: white; font-weight: 900; font-size: 1.4rem;">Admin Panel</span>
+        </a>
+        <ul class="sidebar-links">
+            <li><a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-house-chimney-window"></i> Admin Home</a></li>
+            <li><a href="{{ url_for('admin_shopkeepers') }}"><i class="fas fa-users"></i> Manage Shopkeepers</a></li>
+            <li><a href="{{ url_for('admin_shops') }}"><i class="fas fa-gear"></i> Manage Shops</a></li>
+            <li><a href="{{ url_for('admin_orders') }}"><i class="fas fa-list-ul"></i> All Orders</a></li>
+            <li><hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 10px 0;"></li>
+            <li><a href="{{ url_for('admin_logout') }}" style="color: #ff4d4d;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="bottom-nav-inner">
+            <a href="{{ url_for('admin_dashboard') }}" class="bottom-nav-item">
+                <i class="fas fa-house-chimney-window"></i>
+                <span>Admin Home</span>
+            </a>
+            <a href="{{ url_for('admin_shopkeepers') }}" class="bottom-nav-item">
+                <i class="fas fa-users"></i>
+                <span>Merchants</span>
+            </a>
+            <a href="{{ url_for('admin_shops') }}" class="bottom-nav-item">
+                <i class="fas fa-gear"></i>
+                <span>Shops</span>
+            </a>
+            <a href="{{ url_for('admin_orders') }}" class="bottom-nav-item">
+                <i class="fas fa-list-ul"></i>
+                <span>Orders</span>
+            </a>
+        </div>
+    </div>
+ 
+    <div class="container">
+        <a href="{{ url_for('admin_shopkeepers') }}" class="back-link"><i class="fas fa-arrow-left"></i> RETURN TO MERCHANT NODES</a>
+ 
+        <div class="report-header">
+            <div class="header-main">
+                <h2>Global Platform Performance</h2>
+                <h1>Month: <strong>{{ month_display }}</strong></h1>
+            </div>
+            <div class="stat-card">
+                <span class="stat-lab">Total Monthly Revenue yield</span>
+                <span class="stat-val">₹{{ platform_total }}</span>
+            </div>
+        </div>
+ 
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Merchant Identity</th>
+                        <th>Associated Shop</th>
+                        <th style="text-align: right;">Total Monthly Earnings (Delivered)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if report_data %}
+                        {% for row in report_data %}
+                        <tr>
+                            <td><span class="sk-name">{{ row.username }}</span></td>
+                            <td><span class="sk-shop">{{ row.shop_name or 'PENDING' }}</span></td>
+                            <td style="text-align: right;">
+                                <span class="rev-badge">₹{{ row.monthly_total }}</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr><td colspan="3" style="text-align: center; padding: 100px; color: var(--text-muted);">No operational intelligence found for this cycle.</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+ 
+    <footer class="footer-main">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="footer-brand">
+                    <i class="fas fa-utensils"></i>
+                    <h2>FoodExpress</h2>
+                </div>
+                <p class="footer-desc">
+                    Order smart, skip queues, eat better. Built for LPU & LawGate students, staff and everyone on campus who values their time.
+                </p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="/"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    <li><a href="/shops"><i class="fas fa-chevron-right"></i> All Shops</a></li>
+                    <li><a href="{{ url_for('admin_dashboard') }}#founder"><i class="fas fa-chevron-right"></i> Founder</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Shop</h4>
+                <ul class="footer-links">
+                    <li><a href="/shopkeeper/login"><i class="fas fa-chevron-right"></i> Shopkeeper Login</a></li>
+                    <li><a href="/admin/dashboard"><i class="fas fa-chevron-right"></i> Admin Panel</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <p class="contact-text">mdazhark735@gmail.com</p>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            © 2026 FoodExpress — Made by MD Azhar | Built for everyone, loved by students
+        </div>
+    </footer>
+</body>
+</html>

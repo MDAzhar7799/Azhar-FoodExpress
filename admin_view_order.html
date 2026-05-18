@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management - FoodExpress Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-light: #f3f4f6;
+            --white: #ffffff;
+            --header-gradient: linear-gradient(to right, #1a3a32, #2d6a4f);
+            --text-dark: #111827;
+            --text-muted: #6b7280;
+            --blue: #3b82f6;
+            --green: #10b981;
+            --amber: #f59e0b;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+ 
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: var(--header-gradient);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; }
+        .brand i { font-size: 1.4rem; background: rgba(255,255,255,0.2); padding: 8px; border-radius: 50%; }
+        .brand h1 { font-size: 1.25rem; font-weight: 700; }
+ 
+        .nav-links { display: flex; gap: 25px; align-items: center; }
+        .nav-item { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 500; display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+        .logout-btn {
+            background: #a7f3d0;
+            color: #ef4444;
+            padding: 10px 22px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: 0.3s;
+        }
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ===== CONTAINER ===== */
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 380px; gap: 40px; }
+ 
+        .card { background: white; padding: 40px; border-radius: 32px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); margin-bottom: 30px; }
+        .section-label { font-size: 0.8rem; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 25px; display: block; border-left: 4px solid var(--blue); padding-left: 15px; }
+ 
+        .order-id-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        .order-id-header h1 { font-size: 2rem; font-weight: 900; letter-spacing: -1.5px; }
+        .order-id-header h1 span { color: var(--blue); }
+ 
+        .status-badge { padding: 8px 18px; border-radius: 100px; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; }
+        .status-placed { background: #eff6ff; color: #1e40af; }
+        .status-delivered { background: #f1f5f9; color: #475569; }
+        .status-user-cancelled { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+        .status-cancelled { background: #fff7ed; color: #ea580c; border: 1px solid #ffedd5; }
+ 
+        /* ===== DATA GRID ===== */
+        .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 40px; }
+        .info-item { padding: 20px; background: #f9fafb; border-radius: 20px; border: 1px solid #f3f4f6; }
+        .info-lab { display: block; font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .info-val { font-weight: 850; font-size: 1.1rem; color: var(--text-dark); }
+ 
+        /* ===== ITEM TABLE ===== */
+        .item-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { text-align: left; padding: 15px 0; font-size: 0.95rem; font-weight: 900; color: var(--text-dark); border-bottom: 2px solid #f3f4f6; text-transform: uppercase; letter-spacing: 0.5px; }
+        td { padding: 14px 0; border-bottom: 1px solid #f3f4f6; font-weight: 700; font-size: 0.95rem; vertical-align: middle; }
+        .item-img { width: 72px; height: 72px; object-fit: cover; border-radius: 14px; border: 2px solid #f3f4f6; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .item-img-placeholder { width: 72px; height: 72px; border-radius: 14px; background: linear-gradient(135deg, #e0f2fe, #bae6fd); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; border: 2px solid #f3f4f6; }
+        .item-name-cell { display: flex; align-items: center; gap: 16px; }
+        .total-row { padding-top: 30px; text-align: right; }
+        .total-val { font-size: 2.2rem; font-weight: 900; color: #059669; }
+ 
+        /* ===== FOOTER STYLES ===== */
+        .footer-main {
+            background: #020617;
+            padding: 80px 40px 40px;
+            color: #94a3b8;
+            margin-top: 100px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            text-align: left;
+            grid-column: span 2;
+        }
+        .footer-grid {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+        .footer-col h4 { color: white; font-weight: 800; margin-bottom: 25px; font-size: 1.1rem; }
+        .footer-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .footer-brand i { 
+            background: #22c55e; 
+            color: white; 
+            width: 50px; 
+            height: 50px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 14px; 
+            font-size: 1.6rem; 
+        }
+        .footer-brand h2 { 
+            color: white; 
+            font-size: 2rem; 
+            font-weight: 900; 
+            letter-spacing: -1.5px;
+            margin: 0;
+        }
+        .footer-desc { line-height: 1.6; font-size: 0.95rem; font-weight: 500; }
+        .footer-links { list-style: none; padding: 0; }
+        .footer-links li { margin-bottom: 15px; }
+        .footer-links a { color: #94a3b8; text-decoration: none; font-weight: 500; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
+        .footer-links a:hover { color: #22c55e; padding-left: 5px; }
+        .footer-links i { font-size: 0.7rem; }
+        .contact-item { display: flex; gap: 15px; margin-bottom: 20px; align-items: center; }
+        .contact-item i { color: #22c55e; font-size: 1.1rem; }
+        .contact-text { font-size: 0.9rem; font-weight: 500; line-height: 1.4; margin: 0; }
+        .copyright { text-align: center; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); font-weight: 700; font-size: 0.95rem; color: #ffffff; }
+
+        /* ===== MOBILE COMPONENTS ===== */
+        .mobile-search-header { display: none; background: #0f1c17; padding: 10px 15px 15px; position: sticky; top: 0; z-index: 1500; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; height: 65px; display: none; align-items: center; justify-content: space-around; z-index: 2000; box-shadow: 0 -2px 15px rgba(0,0,0,0.08); border-top: 1px solid #f1f5f9; }
+        .bottom-nav-inner { display: flex; width: 100%; justify-content: space-around; align-items: center; }
+        .bottom-nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #64748b; font-size: 0.7rem; font-weight: 700; gap: 1px; transition: 0.3s; flex: 1; }
+        .bottom-nav-item i { font-size: 1.2rem; transition: 0.3s; }
+        .bottom-nav-item.active { color: #22c55e; }
+        .bottom-nav-item.active i { transform: translateY(-2px); }
+        .mobile-sidebar { position: fixed; top: 0; left: -100%; width: 280px; height: 100vh; background: #122b27; z-index: 3000; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); padding: 40px 25px; box-shadow: 20px 0 50px rgba(0,0,0,0.5); }
+        .mobile-sidebar.active { left: 0; }
+        .mobile-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 2999; display: none; }
+        .mobile-overlay.active { display: block; }
+        .sidebar-links { list-style: none; margin-top: 40px; padding: 0; }
+        .sidebar-links li { margin-bottom: 25px; }
+        .sidebar-links a { color: white; text-decoration: none; font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 15px; }
+        .sidebar-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 1.5rem; cursor: pointer; }
+ 
+        @media (max-width: 1024px) {
+            .container { grid-template-columns: 1fr; gap: 20px; margin: 20px auto; }
+            .footer-main { grid-column: span 1; }
+        }
+
+        @media (max-width: 768px) {
+            .navbar { display: none !important; }
+            .mobile-search-header { display: block !important; }
+            .bottom-nav { display: flex !important; }
+            body { padding-bottom: 0 !important; background-color: #f8fafc !important; overflow-x: hidden !important; }
+
+            .container { margin: 15px auto 0 !important; padding: 0 12px !important; width: 100% !important; box-sizing: border-box !important; }
+            .card { padding: 24px !important; border-radius: 28px !important; margin-bottom: 20px !important; box-shadow: 0 8px 30px rgba(0,0,0,0.03) !important; border: 1px solid #f1f5f9 !important; }
+            
+            .order-id-header { flex-direction: column !important; align-items: flex-start !important; gap: 15px !important; margin-bottom: 30px !important; }
+            .order-id-header h1 { font-size: 1.4rem !important; }
+            .status-badge { font-size: 0.7rem !important; padding: 6px 14px !important; }
+
+            .section-label { font-size: 0.7rem !important; margin-bottom: 20px !important; }
+
+            /* Grid to Single Column */
+            .info-grid { grid-template-columns: 1fr !important; gap: 12px !important; margin-bottom: 30px !important; }
+            .info-item { padding: 16px !important; border-radius: 16px !important; }
+            .info-lab { font-size: 0.65rem !important; }
+            .info-val { font-size: 1rem !important; }
+
+            /* Item Table Fix */
+            .item-table thead { display: none !important; }
+            .item-table tr { display: block !important; margin-bottom: 20px !important; padding-bottom: 15px !important; border-bottom: 1px dashed #e2e8f0 !important; position: relative !important; }
+            .item-table tr:last-child { border-bottom: none !important; margin-bottom: 0 !important; }
+            .item-table td { display: block !important; border-bottom: none !important; padding: 0 !important; margin-bottom: 10px !important; }
+            
+            .item-name-cell { gap: 12px !important; }
+            .item-img, .item-img-placeholder { width: 56px !important; height: 56px !important; border-radius: 12px !important; }
+            .item-name-cell span { font-size: 0.95rem !important; font-weight: 900 !important; }
+
+            /* Qty and Price tags */
+            .item-table td:nth-child(2), .item-table td:nth-child(3) { display: inline-block !important; width: auto !important; margin-right: 15px !important; font-size: 0.85rem !important; color: #64748b !important; }
+            .item-table td:nth-child(4) { position: absolute !important; bottom: 15px !important; right: 0 !important; color: #1e293b !important; font-weight: 950 !important; font-size: 1rem !important; }
+
+            .total-row { padding-top: 25px !important; }
+            .total-val { font-size: 1.8rem !important; }
+
+            /* Mobile Responsive Footer (2-column premium) */
+            .footer-main { padding: 25px 10px 70px !important; width: 100% !important; overflow: hidden !important; margin-top: 50px !important; }
+            .footer-grid { 
+                display: grid !important; 
+                grid-template-columns: 1fr 1fr !important;
+                gap: 12px 10px !important;
+                text-align: left !important; 
+                padding: 0 8px 20px !important; 
+                margin: 0 !important;
+                width: 100% !important;
+                align-items: start !important;
+            }
+            .footer-col { padding: 0 !important; margin: 0 !important; }
+            .footer-brand { display: flex !important; align-items: center !important; gap: 6px !important; margin-bottom: 6px !important; } 
+            .footer-brand i { width: 26px !important; height: 26px !important; font-size: 0.75rem !important; border-radius: 6px !important; background: #22c55e !important; color: white !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+            .footer-brand h2 { font-size: 0.95rem !important; margin: 0 !important; line-height: 26px !important; color: white !important; font-weight: 900 !important; }
+            .footer-desc { font-size: 0.62rem !important; line-height: 1.35 !important; margin-top: 5px !important; color: rgba(255,255,255,0.5) !important; }
+            
+            .footer-col h4 { font-size: 0.78rem !important; margin-bottom: 6px !important; margin-top: 0 !important; padding-top: 0 !important; white-space: nowrap !important; color: white !important; font-weight: 900 !important; line-height: 26px !important; letter-spacing: 0.2px !important; }
+            
+            .footer-links a, .footer-links li { font-size: 0.63rem !important; gap: 4px !important; padding: 1px 0 !important; color: rgba(255,255,255,0.5) !important; white-space: nowrap !important; overflow: visible !important; justify-content: flex-start !important; }
+            .footer-links li { margin-bottom: 3px !important; display: flex !important; align-items: center !important; justify-content: flex-start !important; }
+            .contact-item { gap: 6px !important; margin-bottom: 3px !important; display: flex !important; align-items: center !important; }
+            .contact-item i { font-size: 0.8rem !important; color: #22c55e !important; }
+            .contact-text { font-size: 0.63rem !important; color: rgba(255,255,255,0.5) !important; margin: 0 !important; }
+            
+            .copyright { padding: 12px 8px !important; border-top: 1px solid rgba(255,255,255,0.05) !important; font-size: 0.7rem !important; color: white !important; font-weight: 700 !important; text-align: center !important; white-space: normal !important; line-height: 1.6 !important; }
+        }
+    </style>
+    <script>
+        function toggleSidebar() {
+            document.getElementById('mobileSidebar').classList.toggle('active');
+            document.getElementById('mobileOverlay').classList.toggle('active');
+            document.body.style.overflow = document.getElementById('mobileSidebar').classList.contains('active') ? 'hidden' : '';
+        }
+    </script>
+</head>
+<body>
+    <!-- Mobile Header -->
+    <div class="mobile-search-header">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <a href="{{ url_for('admin_dashboard') }}" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+                <div style="width: 30px; height: 30px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; box-shadow: 0 4px 10px rgba(34,197,94,0.3);">
+                    <i class="fas fa-satellite-dish"></i>
+                </div>
+                <span style="font-size: 0.95rem; font-weight: 800; letter-spacing: -0.3px; color: white;">FoodExpress - Admin</span>
+            </a>
+            <button onclick="toggleSidebar()" style="background:none; border:none; color:white; font-size:1.2rem; padding:0; cursor:pointer;">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Overlay & Sidebar -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="toggleSidebar()"></div>
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <div class="sidebar-close" onclick="toggleSidebar()"><i class="fas fa-times"></i></div>
+        <a href="{{ url_for('admin_dashboard') }}" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+            <div style="width: 44px; height: 44px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: white;"><i class="fas fa-satellite-dish"></i></div>
+            <span style="color: white; font-weight: 900; font-size: 1.4rem;">Admin Panel</span>
+        </a>
+        <ul class="sidebar-links">
+            <li><a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-house-chimney-window"></i> Admin Home</a></li>
+            <li><a href="{{ url_for('admin_shopkeepers') }}"><i class="fas fa-users"></i> Manage Shopkeepers</a></li>
+            <li><a href="{{ url_for('admin_shops') }}"><i class="fas fa-gear"></i> Manage Shops</a></li>
+            <li><a href="{{ url_for('admin_orders') }}"><i class="fas fa-list-ul"></i> All Orders</a></li>
+            <li><hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 10px 0;"></li>
+            <li><a href="{{ url_for('admin_logout') }}" style="color: #ff4d4d;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="bottom-nav-inner">
+            <a href="{{ url_for('admin_dashboard') }}" class="bottom-nav-item">
+                <i class="fas fa-house-chimney-window"></i>
+                <span>Admin Home</span>
+            </a>
+            <a href="{{ url_for('admin_shopkeepers') }}" class="bottom-nav-item">
+                <i class="fas fa-users"></i>
+                <span>Merchants</span>
+            </a>
+            <a href="{{ url_for('admin_shops') }}" class="bottom-nav-item">
+                <i class="fas fa-gear"></i>
+                <span>Shops</span>
+            </a>
+            <a href="{{ url_for('admin_orders') }}" class="bottom-nav-item active">
+                <i class="fas fa-list-ul"></i>
+                <span>Orders</span>
+            </a>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <a href="{{ url_for('admin_dashboard') }}" class="brand">
+            <i class="fas fa-user-shield"></i>
+            <h1>FoodExpress - Admin</h1>
+        </a>
+        <div class="nav-links">
+            <a href="{{ url_for('admin_dashboard') }}" class="nav-item"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a href="{{ url_for('admin_shopkeepers') }}" class="nav-item"><i class="fas fa-users"></i> Shopkeeper</a>
+            <a href="{{ url_for('admin_shops') }}" class="nav-item"><i class="fas fa-gear"></i> Shops</a>
+            <a href="{{ url_for('admin_logout') }}" class="logout-btn"><i class="fas fa-right-from-bracket"></i> Logout</a>
+        </div>
+    </nav>
+ 
+    <div class="container">
+        <div class="main-intel">
+            <div class="card">
+                <div class="order-id-header">
+                    <h1>ORDER <span>#{{ order.order_number or 'N/A' }}</span></h1>
+                    {% if order.order_status == 'Cancelled' %}
+                        <span class="status-badge" style="background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; font-weight: 900;">SHOPKEEPER CANCELLED</span>
+                    {% else %}
+                        <span class="status-badge status-{{ (order.order_status or 'pending')|lower|replace(' ', '-') }}">{{ order.order_status or 'Pending' }}</span>
+                    {% endif %}
+                </div>
+ 
+                <span class="section-label">Customer Details</span>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-lab">Customer Name</span>
+                        <span class="info-val">{{ order.customer_name }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-lab">Phone Number</span>
+                        <span class="info-val">{{ order.customer_phone }}</span>
+                    </div>
+                    <div class="info-item" id="email-block">
+                        <span class="info-lab">Email Address</span>
+                        <span class="info-val" style="color: var(--blue); word-break: break-all;">{{ order.customer_email }}</span>
+                    </div>
+                    <div class="info-item" id="address-block">
+                        <span class="info-lab">Delivery Address</span>
+                        <span class="info-val">{{ order.delivery_address }}</span>
+                    </div>
+                </div>
+                <style>
+                    #email-block, #address-block { grid-column: span 2; }
+                    @media (max-width: 768px) {
+                        #email-block, #address-block { grid-column: span 1 !important; }
+                    }
+                </style>
+ 
+                <span class="section-label">Order Items</span>
+                <table class="item-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th style="text-align: right;">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td>
+                                <div class="item-name-cell">
+                                    {% if item.image_path %}
+                                        <img src="{{ url_for('serve_upload', filename=item.image_path.replace('uploads/', '', 1)) }}" alt="{{ item.item_name }}" class="item-img">
+                                    {% else %}
+                                        <div class="item-img-placeholder">🍽️</div>
+                                    {% endif %}
+                                    <span>{{ item.item_name }}</span>
+                                </div>
+                            </td>
+                            <td>{{ item.quantity }}x</td>
+                            <td>₹{{ item.price }}</td>
+                            <td style="text-align: right;">₹{{ item.price * item.quantity }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+ 
+                <div class="total-row">
+                    <span class="info-lab">Total Amount</span>
+                    <div class="total-val">₹{{ order.total_amount }}</div>
+                </div>
+            </div>
+        </div>
+ 
+        <div class="side-intel">
+            <div class="card">
+                <span class="section-label">Order Info</span>
+                <div class="info-item" style="margin-bottom: 20px;">
+                    <span class="info-lab">Shop Name</span>
+                    <span class="info-val">{{ order.shop_name }}</span>
+                </div>
+                <div class="info-item" style="margin-bottom: 20px;">
+                    <span class="info-lab">Delivery Type</span>
+                    <span class="info-val">{{ order.delivery_type }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-lab">Date & Time</span>
+                    <span class="info-val" style="font-size: 0.9rem;">{{ order.created_at | dateformat('%Y-%m-%d %H:%M') }}</span>
+                </div>
+            </div>
+ 
+            {% if order.payment_screenshot_path %}
+            <div class="card" id="payment-proof-card">
+                <span class="section-label">Payment Proof</span>
+                <img src="{{ url_for('static', filename=order.payment_screenshot_path) }}" 
+                     onerror="document.getElementById('payment-proof-card').style.display='none'"
+                     alt="Proof" style="width: 100%; border-radius: 12px; border: 1px solid #f3f4f6; cursor: pointer; margin-bottom: 15px;" 
+                     onclick="window.open(this.src)">
+                <a href="{{ url_for('static', filename=order.payment_screenshot_path) }}" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; background: #f1f5f9; color: #1e293b; padding: 12px; border-radius: 12px; font-weight: 800; font-size: 0.85rem;">
+                    <i class="fas fa-expand"></i> View Full Image
+                </a>
+            </div>
+            {% endif %}
+        </div>
+ 
+    </div>
+ 
+    <footer class="footer-main">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="footer-brand">
+                    <i class="fas fa-utensils"></i>
+                    <h2>FoodExpress</h2>
+                </div>
+                <p class="footer-desc">
+                    Order smart, skip queues, eat better. Built for LPU & LawGate students, staff and everyone on campus who values their time.
+                </p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="/"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    <li><a href="/shops"><i class="fas fa-chevron-right"></i> All Shops</a></li>
+                    <li><a href="{{ url_for('admin_dashboard') }}#founder"><i class="fas fa-chevron-right"></i> Founder</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Shop</h4>
+                <ul class="footer-links">
+                    <li><a href="/shopkeeper/login"><i class="fas fa-chevron-right"></i> Shopkeeper Login</a></li>
+                    <li><a href="/admin/dashboard"><i class="fas fa-chevron-right"></i> Admin Panel</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <p class="contact-text">mdazhark735@gmail.com</p>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            © 2026 FoodExpress — Made by MD Azhar | Built for everyone, loved by students
+        </div>
+    </footer>
+</body>
+</html>

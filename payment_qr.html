@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Payment - FoodExpress</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --m-white: #ffffff;
+            --m-bg: #f8fafc;
+            --m-green-dark: #0f1c17;
+            --m-green-mid: #1a3a2a;
+            --m-green-light: #2d6a4f;
+            --m-neon: #22c55e;
+            --m-text: #1e293b;
+            --m-muted: #64748b;
+            --m-border: #f1f5f9;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(180deg, #f5f3ff 0%, #ffffff 100%);
+            color: var(--m-text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+        
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: linear-gradient(135deg, var(--m-green-dark) 0%, var(--m-green-mid) 100%);
+            position: sticky; top: 0; z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+        }
+        .nav-container {
+            max-width: 1400px; margin: auto;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 30px; height: 66px;
+        }
+        .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-icon {
+            width: 42px; height: 42px;
+            background: linear-gradient(135deg, var(--m-neon), #16a34a);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; color: white;
+            box-shadow: 0 4px 15px rgba(34,197,94,0.4);
+        }
+        .brand h1 { font-size: 1.35rem; font-weight: 900; color: white; letter-spacing: -0.3px; }
+        .nav-menu { display: flex; align-items: center; gap: 4px; }
+        .nav-menu a {
+            color: rgba(255,255,255,0.75); text-decoration: none; font-weight: 600; font-size: 0.9rem;
+            padding: 9px 16px; border-radius: 10px; display: flex; align-items: center; gap: 7px; transition: 0.25s;
+        }
+        .nav-menu a:hover { color: white; background: rgba(255,255,255,0.1); }
+        .user-name-nav { color: white; font-weight: 700; margin-right: 5px; }
+        .cart-nav { background: rgba(255,255,255,0.1); color: white !important; }
+        .cart-badge {
+            width: 18px; height: 18px; background: #ef4444;
+            border-radius: 50%; color: white;
+            font-size: 10px; font-weight: 800;
+            display: flex; align-items: center; justify-content: center;
+            margin-left: 5px;
+        }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            background: linear-gradient(180deg, #060d0c 0%, #030807 100%);
+            padding: 85px 20px 65px; text-align: center; position: relative;
+        }
+        .page-header::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(34,197,94,0.12), transparent 75%);
+            pointer-events: none;
+        }
+        .header-tag {
+            background: #000000;
+            color: #f97316; border: 1px solid rgba(249, 115, 22, 0.5); 
+            padding: 8px 22px; border-radius: 100px;
+            font-size: 0.82rem; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 2px;
+            display: inline-block; margin-bottom: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+        .page-header h1 { font-size: 3.5rem; font-weight: 900; color: white; letter-spacing: -1.5px; margin-bottom: 12px; }
+        .page-header p { color: rgba(255,255,255,0.7); font-size: 1.15rem; font-weight: 500; }
+
+        .container { width: 95%; max-width: 1000px; margin: 40px auto 80px; padding: 0 16px; flex: 1; position: relative; z-index: 10; }
+        
+        /* ===== PAYMENT CARD ===== */
+        .payment-card {
+            background: white; border-radius: 35px; padding: 32px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.03);
+            animation: fadeUp 0.6s ease both;
+        }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(30px);} to{opacity:1;transform:translateY(0);} }
+
+        .payment-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; padding-bottom: 25px; border-bottom: 2px dashed #f1f5f9; }
+        .payment-id-chip { background: #f8fafc; padding: 10px 20px; border-radius: 100px; border: 1px solid #e2e8f0; }
+        .payment-id-chip span { color: var(--m-muted); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-right: 8px; }
+        .payment-id-chip strong { color: var(--m-green-dark); font-weight: 900; }
+        
+        .amount-badge { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; padding: 10px 24px; border-radius: 100px; font-weight: 800; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 8px; }
+
+        /* ===== LAYOUT CONTENT ===== */
+        .payment-content { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        @media (max-width: 850px) { .payment-content { grid-template-columns: 1fr; } }
+
+        .payment-section-title { font-size: 1.1rem; font-weight: 900; color: var(--m-green-dark); margin-bottom: 25px; display: flex; align-items: center; gap: 12px; }
+        .step-indicator { width: 32px; height: 32px; background: #0f172a; color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 900; }
+
+        /* QR Section */
+        .qr-card-v3 { background: #f8fafc; border: 1px solid #f1f5f9; border-radius: 30px; padding: 35px; text-align: center; }
+        .qr-box { width: 220px; height: 220px; background: white; border-radius: 20px; margin: 0 auto 25px; padding: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+        .qr-box img { width: 100%; height: 100%; object-fit: contain; }
+        
+        .upi-pill {
+            background: white; border: 1px solid #e2e8f0; padding: 15px 20px; border-radius: 16px;
+            display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s;
+        }
+        .upi-pill:hover { border-color: var(--m-neon); background: #f0fdf4; }
+        .upi-val { font-weight: 800; color: var(--m-text); font-size: 0.9rem; }
+        .upi-pill i { color: var(--m-neon); }
+
+        /* Upload Section */
+        .upload-card-v3 { background: #f0fdf9; border: 2px dashed #99f2c8; border-radius: 30px; padding: 35px; text-align: center; cursor: pointer; transition: 0.3s; position: relative; min-height: 350px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .upload-card-v3:hover { background: #e6fdf4; border-color: var(--m-neon); }
+        .upload-card-v3 i.upload-icon { font-size: 3.5rem; color: var(--m-green-dark); margin-bottom: 15px; }
+        .upload-card-v3 h4 { font-weight: 900; color: var(--m-green-dark); margin-bottom: 8px; }
+        .upload-card-v3 p { font-size: 0.85rem; color: var(--m-muted); font-weight: 600; }
+        
+        #imagePreview { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: contain; border-radius: 28px; padding: 10px; background: #e6fdf4; display: none; z-index: 5; }
+
+        /* Summary Section */
+        .summary-card-v3 { background: #ffffff; border-radius: 30px; padding: 32px; border: 1px solid #f1f5f9; box-shadow: 0 10px 35px rgba(0,0,0,0.03); margin: 40px 0 0; border-top: 2px dashed #f1f5f9; padding-top: 32px; }
+        .summary-item { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; border-bottom: 1px solid #f1f5f9; }
+        .summary-item:last-child { border-bottom: none; }
+        .summary-item label { color: var(--m-muted); font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.8px; display: flex; align-items: center; gap: 12px; }
+        .summary-item label i { font-size: 1.2rem; min-width: 20px; text-align: center; color: var(--m-neon); }
+        .summary-item span { color: var(--m-text); font-weight: 900; font-size: 1.05rem; }
+
+        .btn-submit {
+            width: 100%; padding: 22px; border-radius: 100px; font-weight: 900; font-size: 1.1rem;
+            cursor: pointer; transition: 0.4s; display: flex; align-items: center; justify-content: center; gap: 12px;
+            background: linear-gradient(135deg, #0f1c17 0%, #1a3a2a 100%); color: white; border: none;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15); margin-top: 40px;
+        }
+        .btn-submit:hover:not(:disabled) { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.25); }
+        .btn-submit:disabled { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; box-shadow: none; }
+
+        .cancel-btn { display: block; text-align: center; margin-top: 25px; color: #ef4444; font-weight: 800; text-decoration: none; font-size: 0.9rem; }
+        .cancel-btn:hover { text-decoration: underline; }
+
+        /* Loader */
+        .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; flex-direction: column; color: white; backdrop-filter: blur(10px); }
+        .loading-overlay i { font-size: 4rem; color: var(--m-neon); margin-bottom: 25px; }
+
+        /* ===== RICH FOOTER ===== */
+        .simple-footer {
+            background: linear-gradient(135deg, #020617, #0f172a);
+            padding: 80px 30px 0;
+            color: rgba(255,255,255,0.4); font-family: 'Outfit', sans-serif;
+            margin-top: 60px;
+        }
+        .footer-grid {
+            max-width: 1300px; margin: auto;
+            display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px; padding-bottom: 60px;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+        .footer-brand-col .flabel { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .footer-brand-col .flogo {
+            width: 42px; height: 42px; border-radius: 12px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; color: white;
+        }
+        .footer-brand-col h2 { font-size: 1.4rem; font-weight: 900; color: white; margin: 0; }
+        .footer-brand-col p { color: rgba(255,255,255,0.4); font-size: 0.95rem; line-height: 1.75; max-width: 380px; }
+        
+        .footer-col h4 { font-size: 1rem; font-weight: 800; color: white; margin-bottom: 22px; }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a, .contact-info-list li {
+            color: rgba(255,255,255,0.4); text-decoration: none;
+            font-size: 0.9rem; font-weight: 500; transition: 0.3s;
+            display: flex; align-items: flex-start; gap: 10px;
+        }
+        .footer-links a:hover { color: #4ade80; padding-left: 4px; }
+        .footer-links a i, .contact-info-list li i { font-size: 0.85rem; color: #22c55e; margin-top: 4px; width: 16px; text-align: center; }
+        
+        .footer-bottom {
+            max-width: 1300px; margin: auto; padding: 30px 0;
+            text-align: center; color: #ffffff;
+            font-size: 0.9rem; font-weight: 700;
+        }
+        /* ===== MOBILE HEADER ===== */
+        .mobile-search-header { display: none; background: #0f1c17; padding: 10px 15px; position: sticky; top: 0; z-index: 1500; }
+
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: white; height: 65px;
+            display: none; align-items: center; justify-content: space-around;
+            z-index: 2000; box-shadow: 0 -2px 15px rgba(0,0,0,0.08);
+            border-top: 1px solid #f1f5f9;
+        }
+        .bottom-nav-inner {
+            display: flex; width: 100%; justify-content: space-around; align-items: center;
+        }
+        .bottom-nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #64748b; font-size: 0.7rem; font-weight: 700; gap: 1px; transition: 0.3s; flex: 1; }
+        .bottom-nav-item i { font-size: 1.2rem; transition: 0.3s; }
+        .bottom-nav-item.active { color: #22c55e; }
+        .bottom-nav-item.active i { transform: translateY(-2px); }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .navbar { display: none; }
+            .mobile-search-header { display: block !important; background: #0f1c17 !important; }
+            .bottom-nav { display: flex !important; }
+            body { padding-bottom: 0 !important; }
+
+            .page-header { padding: 45px 20px 35px; }
+            .page-header h1 { font-size: 2.2rem; letter-spacing: -1px; }
+            .page-header p { font-size: 0.85rem; }
+            .header-tag { font-size: 0.65rem; padding: 6px 15px; margin-bottom: 15px; }
+
+            .container { margin: 20px auto 40px; padding: 0 15px; }
+            .payment-card { padding: 25px 20px; border-radius: 25px; }
+            .payment-meta { flex-direction: column; gap: 15px; align-items: flex-start; }
+            .payment-content { gap: 30px; }
+            
+            .qr-card-v3, .upload-card-v3 { padding: 25px 20px; border-radius: 25px; }
+            .qr-box { width: 180px; height: 180px; }
+            
+            .btn-submit { padding: 18px; font-size: 1rem; border-radius: 100px; }
+
+            /* Footer Mobile Styles */
+            footer { padding: 35px 10px 70px !important; width: 100% !important; overflow: hidden !important; margin-top: 30px !important; }
+            .footer-grid { 
+                display: grid !important; 
+                grid-template-columns: 1fr 1fr !important;
+                gap: 25px 20px !important;
+                text-align: left !important; 
+                padding: 0 15px 30px !important; 
+                margin: 0 !important;
+                width: 100% !important;
+                align-items: start !important;
+            }
+            .footer-brand-col { text-align: left !important; padding: 0 !important; margin: 0 !important; }
+            .footer-brand-col .flabel { justify-content: flex-start !important; gap: 8px !important; margin-bottom: 10px !important; } 
+            .footer-brand-col .flogo { width: 30px !important; height: 30px !important; font-size: 0.8rem !important; border-radius: 8px !important; }
+            .footer-brand-col h2 { font-size: 1.05rem !important; margin: 0 !important; line-height: 30px !important; color: white !important; font-weight: 900 !important; }
+            .footer-brand-col p { font-size: 0.7rem !important; line-height: 1.4 !important; margin-top: 8px !important; color: rgba(255,255,255,0.5) !important; }
+            .footer-col { padding-top: 0 !important; margin-top: 0 !important; }
+            .footer-col h4 { font-size: 0.85rem !important; margin-bottom: 12px !important; margin-top: 0 !important; padding-top: 0 !important; white-space: nowrap !important; color: white !important; font-weight: 900 !important; line-height: 30px !important; letter-spacing: 0.2px !important; }
+            .footer-links a, .footer-links li { font-size: 0.72rem !important; gap: 6px !important; padding: 4px 0 !important; color: rgba(255,255,255,0.5) !important; white-space: nowrap !important; overflow: visible !important; justify-content: flex-start !important; }
+            .footer-links li { margin-bottom: 6px !important; display: flex !important; align-items: center !important; justify-content: flex-start !important; }
+
+            .footer-bottom { padding: 18px 10px !important; border-top: 1px solid rgba(255,255,255,0.05) !important; }
+            .footer-bottom p { font-size: 0.7rem !important; color: white !important; font-weight: 700 !important; text-align: center !important; white-space: normal !important; line-height: 1.6 !important; }
+            .mobile-toggle { display: block !important; }
+        }
+
+        .mobile-toggle { display: none; }
+
+        /* Mobile Sidebar Overlay (Global) */
+        .mobile-sidebar {
+            position: fixed; top: 0; left: -100%; width: 280px; height: 100vh;
+            background: #122b27; z-index: 3000; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 40px 25px; box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+        }
+        .mobile-sidebar.active { left: 0; }
+        .mobile-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+            z-index: 2999; display: none;
+        }
+        .mobile-overlay.active { display: block; }
+        .sidebar-links { list-style: none; margin-top: 40px; }
+        .sidebar-links li { margin-bottom: 25px; }
+        .sidebar-links a { color: white; text-decoration: none; font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 15px; }
+        .sidebar-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 1.5rem; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('home') }}" class="brand">
+                <div class="logo-icon"><i class="fas fa-utensils"></i></div>
+                <h1>FoodExpress</h1>
+            </a>
+            <div class="nav-menu">
+                <a href="{{ url_for('home') }}"><i class="fas fa-home"></i> Home</a>
+                <a href="{{ url_for('shops_list') }}"><i class="fas fa-store"></i> Shops</a>
+                {% if session.user_id %}
+                    <a href="{{ url_for('cart') }}" class="cart-nav"><i class="fas fa-shopping-bag"></i> Cart <span class="cart-badge" id="cart-count">0</span></a>
+                    <a href="{{ url_for('my_orders') }}"><i class="fas fa-receipt"></i> My Orders</a>
+                    <a href="{{ url_for('profile') }}" title="Profile">
+                        <span class="user-name-nav">{{ session.user_name }}</span>
+                        <i class="fas fa-user-circle" style="color:white;"></i>
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Login</a>
+                {% endif %}
+            </div>
+            <button class="mobile-toggle" onclick="toggleSidebar()" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;"><i class="fas fa-bars"></i></button>
+        </div>
+    </nav>
+    
+    <!-- Mobile Header -->
+    <div class="mobile-search-header" style="padding-bottom: 15px;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <a href="{{ url_for('home') }}" class="brand" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+                <div class="logo-icon" style="width: 30px; height: 30px; background: #22c55e; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; box-shadow: 0 4px 10px rgba(34,197,94,0.3);">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <span style="font-size: 1.1rem; font-weight: 800; letter-spacing: -0.5px; color: white;">FoodExpress</span>
+            </a>
+            <div style="display: flex; align-items: center; gap: 18px; color: white;">
+                {% if session.user_id %}
+                    <a href="{{ url_for('cart') }}" style="color:white; position:relative; font-size: 1.1rem;">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-dot" style="position:absolute; top:-8px; right:-8px; width:15px; height:15px; font-size:9px; background:#ef4444; border-radius:50%; color:white; display:flex; align-items:center; justify-content:center; font-weight:800;" id="cart-count-mobile">0</span>
+                    </a>
+                    <a href="{{ url_for('profile') }}" style="color:white; display:flex; align-items:center; text-decoration:none;">
+                        <i class="fas fa-user-circle" style="font-size: 1.35rem;"></i>
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" style="color:white; font-size: 1.1rem; text-decoration: none;">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </a>
+                {% endif %}
+                <button onclick="toggleSidebar()" style="background:none; border:none; color:white; font-size:1.2rem; padding:0; cursor:pointer;">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Sidebar -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="toggleSidebar()"></div>
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <div class="sidebar-close" onclick="toggleSidebar()"><i class="fas fa-times"></i></div>
+        <a href="{{ url_for('home') }}" class="brand" style="text-decoration: none; display: flex; align-items: center; gap: 12px;">
+            <div class="logo-icon" style="width: 44px; height: 44px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: white;"><i class="fas fa-utensils"></i></div>
+            <span class="brand-name" style="color: white; font-weight: 900; font-size: 1.4rem;">FoodExpress</span>
+        </a>
+        <ul class="sidebar-links">
+            <li><a href="{{ url_for('home') }}"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="{{ url_for('shops_list') }}"><i class="fas fa-store"></i> Browse Shops</a></li>
+            {% if session.user_id %}
+                <li><a href="{{ url_for('cart') }}"><i class="fas fa-shopping-cart"></i> My Cart</a></li>
+                <li><a href="{{ url_for('my_orders') }}"><i class="fas fa-receipt"></i> My Orders</a></li>
+                <li><a href="{{ url_for('profile') }}"><i class="fas fa-user-circle"></i> My Profile</a></li>
+                <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            {% else %}
+                <li><a href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                <li><a href="{{ url_for('register') }}"><i class="fas fa-user-plus"></i> Register Now</a></li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="bottom-nav-inner">
+            <a href="{{ url_for('home') }}" class="bottom-nav-item">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="{{ url_for('shops_list') }}" class="bottom-nav-item">
+                <i class="fas fa-search"></i>
+                <span>Explore</span>
+            </a>
+            <a href="{{ url_for('cart') }}" class="bottom-nav-item">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Cart</span>
+            </a>
+            <a href="{{ url_for('my_orders') }}" class="bottom-nav-item">
+                <i class="fas fa-receipt"></i>
+                <span>My Order</span>
+            </a>
+            <a href="{{ url_for('profile') if session.user_id else url_for('login') }}" class="bottom-nav-item active">
+                <i class="fas fa-user"></i>
+                <span>Account</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="page-header">
+        <div class="header-tag">✦ Secure Checkout ✦</div>
+        <h1>Finalize Order</h1>
+        <p>Transfer the amount below to complete your order with <strong>{{ shop['name'] }}</strong></p>
+    </div>
+
+    <div class="container">
+        <div class="payment-card">
+            <div class="payment-meta">
+                <div class="payment-id-chip">
+                    <span>Order Total</span>
+                    <strong>₹{{ order_data.total_amount if order_data else '0.00' }}</strong>
+                </div>
+                <div class="amount-badge">
+                    <i class="fas fa-shield-alt"></i> Verified Merchant
+                </div>
+            </div>
+
+            <div class="payment-content">
+                <!-- Step 1 -->
+                <div>
+                    <h3 class="payment-section-title">
+                        <span class="step-indicator">1</span> Scan & Pay
+                    </h3>
+                    <div class="qr-card-v3">
+                        <div class="qr-box" id="qrContainer">
+                            {% if shop['qr_code_path'] %}
+                                <img src="{{ url_for('static', filename=shop['qr_code_path']) }}" alt="Shop QR Code" id="qrImage" onerror="showFallbackQR()">
+                            {% else %}
+                                <i class="fas fa-qrcode" style="font-size: 6rem; color: #cbd5e1;"></i>
+                            {% endif %}
+                        </div>
+                        
+                        <div id="upi-display-section">
+                            {% if shop['upi_id'] %}
+                            <div class="upi-pill" onclick="copyUpi()">
+                                <span class="upi-val" id="upiId">{{ shop['upi_id'] }}</span>
+                                <i class="fas fa-copy"></i>
+                            </div>
+                            <p style="font-size: 0.75rem; color: var(--m-muted); font-weight: 700; margin-top: 10px;">Click to copy UPI ID</p>
+                            {% else %}
+                            <div style="background: #fff8e6; padding: 15px; border-radius: 16px; border: 1px solid #fde68a; color: #b45309; font-size: 0.85rem; font-weight: 700;">
+                                <i class="fas fa-exclamation-triangle"></i> UPI ID not provided. Please use QR code or contact shop.
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div>
+                    <h3 class="payment-section-title">
+                        <span class="step-indicator">2</span> Upload Proof
+                    </h3>
+                    <form id="paymentForm">
+                        <label class="upload-card-v3" for="screenshot">
+                            <input type="file" id="screenshot" name="screenshot" accept="image/*" style="display: none;" onchange="handleFileChange(this)">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <h4>Select Payment Proof</h4>
+                            <p>Upload a screenshot of your payment</p>
+                            <img id="imagePreview">
+                        </label>
+                        <button type="submit" class="btn-submit" id="submitBtn" disabled>
+                            Complete Order <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="summary-card-v3">
+                <div class="summary-item">
+                    <label><i class="fas fa-store"></i> Paying To</label>
+                    <span>{{ shop['name'] }}</span>
+                </div>
+                <div class="summary-item">
+                    <label><i class="fas fa-wallet"></i> Payment Mode</label>
+                    <span>UPI / Scan</span>
+                </div>
+                <div class="summary-item">
+                    <label><i class="fas fa-receipt"></i> Net Amount</label>
+                    <span style="color: #f97316; font-size: 1.4rem;">₹{{ order_data.total_amount if order_data else '0.00' }}</span>
+                </div>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 25px;">
+                <a href="{{ url_for('checkout_page') }}" class="btn-home" style="width: 100%; text-decoration: none; border-radius: 100px; padding: 18px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; background: #f1f5f9; color: var(--m-text); transition: 0.3s;">
+                    <i class="fas fa-edit"></i> Edit Order Details
+                </a>
+                <a href="{{ url_for('cart') }}" class="cancel-btn" style="margin-top: 0;">Cancel and return to cart</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <i class="fas fa-circle-notch fa-spin"></i>
+        <h2 style="font-weight: 900; letter-spacing: -1px;">Processing Payment</h2>
+        <p style="color: rgba(255,255,255,0.6); font-weight: 500; margin-top: 10px;">Hang tight! We're verifying your transaction...</p>
+    </div>
+
+    <!-- Rich Footer -->
+    <footer class="simple-footer">
+        <div class="footer-grid">
+            <div class="footer-brand-col">
+                <div class="flabel">
+                    <div class="flogo"><i class="fas fa-utensils"></i></div>
+                <h2>FoodExpress</h2>
+                </div>
+                <p>A premium food ordering experience for students and faculty across LPU & LawGate. Fresh food, fast delivery, every time.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('home') }}"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    <li><a href="{{ url_for('shops_list') }}"><i class="fas fa-chevron-right"></i> All Shops</a></li>
+                    <li><a href="{{ url_for('home') }}#founder"><i class="fas fa-chevron-right"></i> Founder</a></li>
+                    <li><a href="{{ url_for('my_orders') }}"><i class="fas fa-chevron-right"></i> Track Orders</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contact {{ shop['name'] }}</h4>
+                <ul class="footer-links contact-info-list">
+                    <li><i class="fas fa-map-marker-alt"></i> <span>{{ shop['location'] or 'LawGate, LPU Campus Hub' }}</span></li>
+                    <li><i class="fas fa-phone"></i> <span>{{ shop['phone'] or '+91 91538 880XX' }}</span></li>
+                    <li><i class="fas fa-clock"></i> <span>09:00 AM - 11:59 PM</span></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <ul class="footer-links contact-info-list">
+                    <li><a href="mailto:mdazhark735@gmail.com"><i class="fas fa-envelope"></i> <span>mdazhark735@gmail.com</span></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 FoodExpress — Made by MD Azhar | Built for everyone, loved by students</p>
+        </div>
+    </footer>
+
+    <script>
+        function showFallbackQR() {
+            const qrImg = document.getElementById('qrImage');
+            if (qrImg) qrImg.style.display = 'none';
+            const qrContainer = document.getElementById('qrContainer');
+            qrContainer.innerHTML = '<i class="fas fa-qrcode" style="font-size: 6rem; color: #cbd5e1;"></i>';
+        }
+
+        function copyUpi() {
+            const upi = document.getElementById('upiId').innerText;
+            navigator.clipboard.writeText(upi).then(() => {
+                alert('UPI ID copied to clipboard!');
+            });
+        }
+
+        function handleFileChange(input) {
+            const preview = document.getElementById('imagePreview');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    submitBtn.disabled = false;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.style.display = 'flex';
+            
+            const formData = new FormData();
+            formData.append('screenshot', document.getElementById('screenshot').files[0]);
+            
+            fetch('{{ url_for("upload_payment_screenshot") }}', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    localStorage.removeItem('food_cart');
+                    window.location.href = data.redirect;
+                } else {
+                    alert('Error: ' + data.error);
+                    overlay.style.display = 'none';
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('An error occurred during upload.');
+                overlay.style.display = 'none';
+            });
+        });
+
+        // Initialize cart count
+        function updateNavCartCount() {
+            let cart = JSON.parse(localStorage.getItem('food_cart') || '[]');
+            let count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const badge = document.getElementById('cart-count');
+            const badgeMob = document.getElementById('cart-count-mobile');
+            if (badge) {
+                badge.innerText = count;
+                badge.style.display = count > 0 ? 'flex' : 'none';
+            }
+            if (badgeMob) {
+                badgeMob.innerText = count;
+                badgeMob.style.display = count > 0 ? 'flex' : 'none';
+            }
+        }
+
+        function toggleSidebar() {
+            document.getElementById('mobileSidebar').classList.toggle('active');
+            document.getElementById('mobileOverlay').classList.toggle('active');
+            document.body.style.overflow = document.getElementById('mobileSidebar').classList.contains('active') ? 'hidden' : '';
+        }
+        
+        document.addEventListener('DOMContentLoaded', updateNavCartCount);
+    </script>
+</body>
+</html>
